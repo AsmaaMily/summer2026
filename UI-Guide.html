@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل تعديل الواجهات - مشروع تتبع المصاريف</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.8;
+            padding: 2rem;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #888; margin-bottom: 2.5rem; font-size: 0.95rem; }
+        h2 {
+            font-size: 1.4rem;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #222;
+            color: #f0f0f0;
+        }
+        h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: #93c5fd; }
+        p { margin-bottom: 0.75rem; color: #bbb; }
+        .note {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .note strong { color: #fbbf24; }
+        .warning {
+            background: #1a1005;
+            border-color: #92400e;
+        }
+        .tip {
+            background: #051a10;
+            border-color: #065f46;
+        }
+        .tip strong { color: #34d399; }
+        pre {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            overflow-x: auto;
+            margin: 0.75rem 0 1.25rem;
+            font-size: 0.85rem;
+            direction: ltr;
+            text-align: left;
+        }
+        code {
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            color: #a5d6ff;
+        }
+        .inline-code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .file-path {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+        .color-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 0.75rem;
+        }
+        .color-swatch {
+            width: 100%;
+            height: 48px;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+        .color-name { font-size: 0.8rem; color: #888; }
+        .color-value { font-size: 0.75rem; color: #666; direction: ltr; text-align: left; }
+        .breakpoint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.85rem;
+        }
+        .breakpoint-table th, .breakpoint-table td {
+            border: 1px solid #222;
+            padding: 0.6rem 0.75rem;
+            text-align: right;
+        }
+        .breakpoint-table th { background: #111; color: #93c5fd; }
+        .breakpoint-table td { color: #bbb; }
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to left, transparent, #333, transparent);
+            margin: 3rem 0;
+        }
+        .example-box {
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1rem 0;
+            background: #0d0d0d;
+        }
+        .example-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 0.75rem;
+        }
+        .demo-btn {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .demo-btn-primary { background: #2563eb; color: white; }
+        .demo-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .demo-btn-secondary { background: transparent; color: #93c5fd; border: 1.5px solid #334155; }
+        .demo-btn-secondary:hover { background: #1e293b; }
+        .demo-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+        .demo-card:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .toc {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0 2rem;
+        }
+        .toc-title { font-weight: 700; margin-bottom: 0.75rem; color: #f0f0f0; }
+        .toc ol { padding-right: 1.25rem; }
+        .toc li { margin: 0.4rem 0; }
+        .toc a { color: #60a5fa; text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .file-tree {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            direction: ltr;
+            text-align: left;
+            margin: 1rem 0;
+            color: #888;
+        }
+        .file-tree .highlight { color: #fbbf24; }
+        .file-tree .folder { color: #60a5fa; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+<h1>دليل تعديل الواجهات</h1>
+<p class="subtitle">مشروع تتبع المصاريف | Laravel + Inertia + Svelte + TailwindCSS v4</p>
+
+<div class="toc">
+    <div class="toc-title">فهرس المحتويات</div>
+    <ol>
+        <li><a href="#structure">هيكل الملفات</a></li>
+        <li><a href="#colors">تعديل الألوان</a></li>
+        <li><a href="#sizes">تعديل الأحجام والأبعاد</a></li>
+        <li><a href="#effects">إضافة تأثيرات CSS</a></li>
+        <li><a href="#responsive">الاستجابة للشاشات (Desktop vs Mobile)</a></li>
+        <li><a href="#desktop">تعديلات واجهة اللابتوب</a></li>
+        <li><a href="#mobile">تعديلات واجهة الجوال</a></li>
+        <li><a href="#components">تعديل المكونات المشتركة</a></li>
+    </ol>
+</div>
+
+<!-- ===== SECTION 1: FILE STRUCTURE ===== -->
+<h2 id="structure">1. هيكل الملفات المهم</h2>
+
+<p>الملفات الأساسية اللي راح تعدل عليها:</p>
+
+<div class="file-tree">
+<span class="folder">resources/</span>
+├── <span class="folder">css/</span>
+│   └── <span class="highlight">app.css</span>          ← كل الألوان والمتغيرات العامة
+├── <span class="folder">js/</span>
+│   ├── <span class="folder">pages/</span>        ← صفحات الموقع (Dashboard, Transactions, ...)
+│   │   ├── <span class="highlight">Dashboard.svelte</span>
+│   │   ├── <span class="highlight">Transactions.svelte</span>
+│   │   ├── <span class="highlight">AiAssistant.svelte</span>
+│   │   ├── <span class="highlight">BudgetGoals.svelte</span>
+│   │   └── <span class="highlight">Profile.svelte</span>
+│   ├── <span class="folder">layouts/</span>      ← تخطيطات الصفحات
+│   │   └── <span class="highlight">app/MainAppLayout.svelte</span>
+│   └── <span class="folder">components/</span>   ← مكونات مشتركة
+│       ├── <span class="highlight">DesktopTopNav.svelte</span>   ← شريط التنقل العلوي (لابتوب)
+│       ├── <span class="highlight">MobileBottomNav.svelte</span> ← شريط التنقل السفلي (جوال)
+│       ├── <span class="highlight">AppShell.svelte</span>
+│       └── <span class="folder">ui/</span>          ← مكونات UI أساسية (أزرار، بطاقات، ...)
+</div>
+
+<div class="note tip">
+    <strong>ملاحظة:</strong> المشروع يستخدم <strong>TailwindCSS v4</strong> — الألوان تُعرّف كـ CSS variables في <code class="inline-code">app.css</code> وتُستخدم كـ utility classes في ملفات Svelte.
+</div>
+
+<!-- ===== SECTION 2: COLORS ===== -->
+<div class="section-divider"></div>
+<h2 id="colors">2. تعديل الألوان</h2>
+
+<p>كل ألوان الموقع مُعرّفة كـ <strong>CSS custom properties</strong> (متغيرات) في ملف:</p>
+<p><span class="file-path">resources/css/app.css</span></p>
+
+<h3>أين تُعرّف الألوان؟</h3>
+<p>في قسم <code class="inline-code">:root</code> (للوضع الفاتح) وقسم <code class="inline-code">.dark</code> (للوضع الداكن):</p>
+
+<pre><code>/* الوضع الفاتح - Light Mode */
+:root {
+    --background: hsl(0 0% 100%);      /* خلفية الصفحة */
+    --foreground: hsl(0 0% 3.9%);      /* لون النص */
+    --primary: hsl(0 0% 9%);           /* اللون الأساسي (الأزرار، الروابط) */
+    --primary-foreground: hsl(0 0% 98%); /* نص فوق اللون الأساسي */
+    --secondary: hsl(0 0% 92.1%);      /* اللون الثانوي */
+    --muted: hsl(0 0% 96.1%);          /* خلفية مكتومة */
+    --muted-foreground: hsl(0 0% 45.1%); /* نص مكتوم */
+    --accent: hsl(0 0% 96.1%);         /* لون التمييز */
+    --destructive: hsl(0 84.2% 60.2%); /* لون التحذير/الحذف (أحمر) */
+    --border: hsl(0 0% 92.8%);         /* لون الحدود */
+    --ring: hsl(0 0% 3.9%);            /* لون حلقة التركيز */
+    /* ... المزيد */
+}
+
+/* الوضع الداكن - Dark Mode */
+.dark {
+    --background: hsl(0 0% 3.9%);
+    --foreground: hsl(0 0% 98%);
+    --primary: hsl(0 0% 98%);
+    /* ... */
+}
+</code></pre>
+
+<h3>كيف أغيّر لون الموقع؟</h3>
+
+<p><strong>مثال 1:</strong> تغيير اللون الأساسي إلى أزرق:</p>
+<pre><code>/* في :root (الفاتح) */
+--primary: hsl(220 90% 56%);           /* أزرق */
+--primary-foreground: hsl(0 0% 100%);  /* أبيض للنص فوقه */
+
+/* في .dark (الداكن) */
+--primary: hsl(220 90% 60%);           /* أزرق أفتح شوي للداكن */
+--primary-foreground: hsl(0 0% 100%);
+</code></pre>
+
+<p><strong>مثال 2:</strong> تغيير لون الخلفية إلى رمادي فاتح:</p>
+<pre><code>:root {
+    --background: hsl(210 20% 98%);    /* رمادي فاتح جداً مع مسحة زرقاء */
+}
+.dark {
+    --background: hsl(220 15% 8%);     /* رمادي داكن للوضع الليلي */
+}
+</code></pre>
+
+<h3>فهم صيغة HSL</h3>
+<div class="color-grid">
+    <div class="color-card">
+        <div class="color-swatch" style="background: hsl(220 90% 56%)"></div>
+        <div class="color-name">hsl(220 90% 56%)</div>
+        <div class="color-value">220 = درجة اللون (أزرق)<br>90% = التشبع<br>56% = السطوع</div>
+    </div>
+    <div class="color-card">
+        <div class="color-swatch" style="background: hsl(0 84% 60%)"></div>
+        <div class="color-name">hsl(0 84% 60%)</div>
+        <div class="color-value">0 = درجة اللون (أحمر)<br>84% = التشبع<br>60% = السطوع</div>
+    </div>
+    <div class="color-card">
+        <div class="color-swatch" style="background: hsl(150 60% 45%)"></div>
+        <div class="color-name">hsl(150 60% 45%)</div>
+        <div class="color-value">150 = درجة اللون (أخضر)<br>60% = التشبع<br>45% = السطوع</div>
+    </div>
+</div>
+
+<div class="note">
+    <strong>درجات اللون (Hue):</strong> 0=أحمر، 30=برتقالي، 60=أصفر، 120=أخضر، 180=سماوي، 220=أزرق، 270=بنفسجي، 330=وردي
+</div>
+
+<h3>ألوان الرسوم البيانية (Charts)</h3>
+<pre><code>--chart-1: hsl(12 76% 61%);    /* برتقالي */
+--chart-2: hsl(173 58% 39%);   /* أخضر مائل للأزرق */
+--chart-3: hsl(197 37% 24%);   /* أزرق داكن */
+--chart-4: hsl(43 74% 66%);    /* ذهبي */
+--chart-5: hsl(27 87% 67%);    /* برتقالي فاتح */
+</code></pre>
+
+<!-- ===== SECTION 3: SIZES ===== -->
+<div class="section-divider"></div>
+<h2 id="sizes">3. تعديل الأحجام والأبعاد</h2>
+
+<p>الأحجام تُتحكم فيها عبر <strong>Tailwind utility classes</strong> مباشرة في ملفات Svelte.</p>
+
+<h3>أحجام النصوص</h3>
+<pre><code>&lt;!-- نص صغير --&gt;
+&lt;span class="text-xs"&gt;       /* 0.75rem = 12px */
+&lt;span class="text-sm"&gt;       /* 0.875rem = 14px */
+&lt;span class="text-base"&gt;     /* 1rem = 16px (الافتراضي) */
+&lt;span class="text-lg"&gt;       /* 1.125rem = 18px */
+&lt;span class="text-xl"&gt;       /* 1.25rem = 20px */
+&lt;span class="text-2xl"&gt;      /* 1.5rem = 24px */
+&lt;span class="text-3xl"&gt;      /* 1.875rem = 30px */
+</code></pre>
+
+<h3>أحجام العناصر (padding, margin, gap)</h3>
+<pre><code>&lt;!-- المسافات الداخلية (padding) --&gt;
+&lt;div class="p-4"&gt;       /* padding: 1rem = 16px من كل الجهات */
+&lt;div class="px-6"&gt;      /* padding-left/right: 1.5rem = 24px */
+&lt;div class="py-2"&gt;      /* padding-top/bottom: 0.5rem = 8px */
+
+&lt;!-- المسافات الخارجية (margin) --&gt;
+&lt;div class="m-4"&gt;       /* margin: 1rem من كل الجهات */
+&lt;div class="mb-6"&gt;      /* margin-bottom: 1.5rem */
+&lt;div class="mt-2"&gt;      /* margin-top: 0.5rem */
+
+&lt;!-- المسافات بين العناصر (gap) --&gt;
+&lt;div class="flex gap-2"&gt;  /* مسافة 0.5rem بين العناصر */
+&lt;div class="flex gap-4"&gt;  /* مسافة 1rem بين العناصر */
+</code></pre>
+
+<h3>تعديل حجم عنصر محدد</h3>
+<p>مثال: تكبير زر في <span class="file-path">MobileBottomNav.svelte</span>:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;div class="flex size-14 -mt-5 items-center justify-center rounded-full"&gt;
+
+&lt;!-- بعد (تكبير الزر) --&gt;
+&lt;div class="flex size-16 -mt-6 items-center justify-center rounded-full"&gt;
+</code></pre>
+
+<h3>تعديل عرض العناصر</h3>
+<pre><code>&lt;!-- عرض ثابت --&gt;
+&lt;div class="w-64"&gt;          /* عرض 16rem = 256px */
+&lt;div class="w-full"&gt;        /* عرض 100% */
+&lt;div class="w-screen"&gt;      /* عرض الشاشة كاملة */
+
+&lt;!-- عرض نسبي (responsive) --&gt;
+&lt;div class="w-full md:w-1/2 lg:w-1/3"&gt;  /* جوال=كامل، تابلت=نص، لابتوب=ثلث */
+</code></pre>
+
+<h3>تعديل ارتفاع العناصر</h3>
+<pre><code>&lt;div class="h-16"&gt;          /* ارتفاع 4rem = 64px */
+&lt;div class="h-screen"&gt;      /* ارتفاع الشاشة (لا تستخدمه - استخدم min-h-[100dvh]) */
+&lt;div class="min-h-[100dvh]"&gt; /* الحد الأدنى = ارتفاع الشاشة (هذا هو الصحيح) */
+</code></pre>
+
+<h3>الزوايا الدائرية (Border Radius)</h3>
+<pre><code>&lt;div class="rounded-sm"&gt;    /* 4px */
+&lt;div class="rounded-md"&gt;    /* 6px */
+&lt;div class="rounded-lg"&gt;    /* 8px (الافتراضي) */
+&lt;div class="rounded-xl"&gt;    /* 12px */
+&lt;div class="rounded-2xl"&gt;   /* 16px */
+&lt;div class="rounded-full"&gt;  /* دائرة كاملة */
+</code></pre>
+
+<!-- ===== SECTION 4: CSS EFFECTS ===== -->
+<div class="section-divider"></div>
+<h2 id="effects">4. إضافة تأثيرات CSS</h2>
+
+<h3>تأثيرات الانتقال (Transitions)</h3>
+<pre><code>&lt;!-- انتقال اللون عند التمرير --&gt;
+&lt;button class="bg-blue-500 transition-colors hover:bg-blue-600"&gt;
+
+&lt;!-- انتقال مع تحريك --&gt;
+&lt;div class="transition-all duration-300 hover:scale-105 hover:shadow-lg"&gt;
+
+&lt;!-- انتقال سريع --&gt;
+&lt;div class="transition-transform duration-200 hover:-translate-y-1"&gt;
+</code></pre>
+
+<h3>تأثير الظل (Shadow)</h3>
+<pre><code>&lt;div class="shadow-sm"&gt;     /* ظل خفيف */
+&lt;div class="shadow-md"&gt;     /* ظل متوسط */
+&lt;div class="shadow-lg"&gt;     /* ظل كبير */
+&lt;div class="shadow-xl"&gt;     /* ظل كبير جداً */
+
+/* ظل مخصص */
+&lt;div class="shadow-[0_4px_20px_rgba(59,130,246,0.3)]"&gt;  /* ظل أزرق */
+</code></pre>
+
+<h3>تأثير الزجاج (Glassmorphism) - موجود بالمشروع</h3>
+<pre><code>&lt;!-- هذا التأثير موجود في شريط التنقل --&gt;
+&lt;nav class="bg-background/95 backdrop-blur-lg border-b border-border"&gt;
+
+/* الشفافية: bg-background/95 = خلفية بشفافية 95% */
+/* الضبابية: backdrop-blur-lg = تأثير زجاج ضبابي */
+</code></pre>
+
+<h3>تأثيرات hover مخصصة</h3>
+<pre><code>&lt;!-- تكبير خفيف مع ظل --&gt;
+&lt;div class="transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)]"&gt;
+
+&lt;!-- تأثير الضغط --&gt;
+&lt;button class="active:scale-95 active:translate-y-px"&gt;
+
+&lt;!-- توهج (glow) --&gt;
+&lt;div class="hover:shadow-[0_0_20px_rgba(59,130,246,0.4)]"&gt;
+</code></pre>
+
+<h3>تأثيرات الحركة (Animations)</h3>
+<pre><code>&lt;!-- ظهور تدريجي --&gt;
+&lt;div class="animate-in fade-in duration-300"&gt;
+
+&lt;!-- انزلاق من الأسفل --&gt;
+&lt;div class="animate-in slide-in-from-bottom-4 duration-500"&gt;
+
+&lt;!-- دوران --&gt;
+&lt;div class="animate-spin"&gt;
+
+/* حركة مخصصة - أضفها في app.css */
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.4); }
+    50% { box-shadow: 0 0 20px 4px rgba(59,130,246,0.2); }
+}
+.pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+</code></pre>
+
+<h3>تأثيرات Gradient</h3>
+<pre><code>&lt;!-- تدرج لوني --&gt;
+&lt;div class="bg-gradient-to-r from-blue-500 to-purple-600"&gt;
+
+&lt;!-- تدرج مع نص --&gt;
+&lt;h1 class="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent"&gt;
+
+/* تدرج مخصص في app.css */
+.glass-gradient {
+    background: linear-gradient(135deg,
+        rgba(255,255,255,0.1) 0%,
+        rgba(255,255,255,0.05) 100%
+    );
+}
+</code></pre>
+
+<!-- ===== SECTION 5: RESPONSIVE ===== -->
+<div class="section-divider"></div>
+<h2 id="responsive">5. الاستجابة للشاشات (Responsive Design)</h2>
+
+<p>المشروع يستخدم نظام <strong>Mobile-First</strong> — الكلاس يُطبق على الجوال أولاً، ثم تُضيف breakpoint للشاشات الأكبر.</p>
+
+<h3>Nقاط التوقف (Breakpoints)</h3>
+<table class="breakpoint-table">
+    <thead>
+        <tr>
+            <th>البادئة</th>
+            <th>العرض الأدنى</th>
+            <th>الجهاز</th>
+            <th>مثال</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="inline-code">(بدون)</code></td>
+            <td>0px</td>
+            <td>جوال</td>
+            <td><code class="inline-code">class="hidden"</code> = مخفي دائماً</td>
+        </tr>
+        <tr>
+            <td><code class="inline-code">sm:</code></td>
+            <td>640px</td>
+            <td>جوال كبير</td>
+            <td><code class="inline-code">class="sm:hidden"</code> = مخفي من 640px+</td>
+        </tr>
+        <tr>
+            <td><code class="inline-code">md:</code></td>
+            <td>768px</td>
+            <td>تابلت</td>
+            <td><code class="inline-code">class="md:block"</code> = ظاهر من 768px+</td>
+        </tr>
+        <tr>
+            <td><code class="inline-code">lg:</code></td>
+            <td>1024px</td>
+            <td>لابتوب</td>
+            <td><code class="inline-code">class="lg:hidden"</code> = مخفي من 1024px+</td>
+        </tr>
+        <tr>
+            <td><code class="inline-code">xl:</code></td>
+            <td>1280px</td>
+            <td>شاشة كبيرة</td>
+            <td><code class="inline-code">class="xl:flex"</code> = flex من 1280px+</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>كيف يعمل النظام؟</h3>
+<pre><code>&lt;!-- مثال: عنصر مخفي في الجوال، ظاهر في اللابتوب --&gt;
+&lt;div class="hidden lg:block"&gt;محتوى اللابتوب فقط&lt;/div&gt;
+
+&lt;!-- مثال: عنصر ظاهر في الجوال، مخفي في اللابتوب --&gt;
+&lt;div class="block lg:hidden"&gt;محتوى الجوال فقط&lt;/div&gt;
+
+&lt;!-- مثال: حجم نص يتغير حسب الشاشة --&gt;
+&lt;h1 class="text-xl md:text-2xl lg:text-3xl"&gt;عنوان متجاوب&lt;/h1&gt;
+
+&lt;!-- مثال: أعمدة تتغير حسب الشاشة --&gt;
+&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"&gt;
+    &lt;!-- جوال: عمود واحد | تابلت: عمودين | لابتوب: 3 أعمدة --&gt;
+&lt;/div&gt;
+</code></pre>
+
+<div class="note">
+    <strong>القاعدة الأساسية:</strong> اكتب الكلاس للجوال أولاً (بدون بادئة)، ثم أضف <code class="inline-code">lg:</code> للابتوب. مثال: <code class="inline-code">class="p-4 lg:p-6"</code> يعني padding صغير في الجوال، أكبر في اللابتوب.
+</div>
+
+<!-- ===== SECTION 6: DESKTOP ===== -->
+<div class="section-divider"></div>
+<h2 id="desktop">6. تعديلات واجهة اللابتوب</h2>
+
+<p>واجهة اللابتوب تتحكم فيها هذه الملفات:</p>
+
+<div class="file-tree">
+<span class="highlight">DesktopTopNav.svelte</span>   ← شريط التنقل العلوي (يظهر من lg: = 1024px+)
+<span class="highlight">AppSidebar.svelte</span>      ← القائمة الجانبية (إن وُجدت)
+<span class="highlight">MainAppLayout.svelte</span>   ← التخطيط العام للتطبيق
+</div>
+
+<h3>شريط التنقل العلوي (DesktopTopNav)</h3>
+<p>الملف: <span class="file-path">resources/js/components/DesktopTopNav.svelte</span></p>
+
+<pre><code>&lt;!-- الكلاس اللي يتحكم في ظهوره --&gt;
+&lt;div class="fixed inset-x-0 top-0 z-50 border-b border-border
+            bg-background/95 backdrop-blur-lg
+            hidden lg:block"&gt;
+    <!--           ^^^^^^^^^^^^ = مخفي في الجوال، ظاهر في اللابتوب --&gt;
+
+    &lt;!-- ارتفاع الشريط --&gt;
+    &lt;div class="flex h-16 items-center justify-between px-6"&gt;
+    &lt;!--        ^^^^ = الارتفاع (64px)    ^^^^ = المسافة من الأطراف --&gt;
+</code></pre>
+
+<h3>أمثلة تعديل واجهة اللابتوب</h3>
+
+<p><strong>مثال 1:</strong> تغيير ارتفاع الشريط العلوي:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;div class="flex h-16 items-center"&gt;
+
+&lt;!-- بعد (أطول) --&gt;
+&lt;div class="flex h-20 items-center"&gt;
+</code></pre>
+
+<p><strong>مثال 2:</strong> تغيير عرض القائمة الجانبية (Sheet):</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;SheetContent side="left" class="w-[280px] p-6"&gt;
+
+&lt;!-- بعد (أعرض) --&gt;
+&lt;SheetContent side="left" class="w-[360px] p-8"&gt;
+</code></pre>
+
+<p><strong>مثال 3:</strong> تعديل المسافات في صفحة Dashboard للابتوب:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;div class="p-4 md:p-6 lg:p-8"&gt;
+
+&lt;!-- بعد (مساحة أكبر) --&gt;
+&lt;div class="p-4 md:p-8 lg:p-12"&gt;
+</code></pre>
+
+<p><strong>مثال 4:</strong> تغيير عدد أعمدة الشبكة في اللابتوب:</p>
+<pre><code>&lt;!-- قبل: 3 أعمدة --&gt;
+&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"&gt;
+
+&lt;!-- بعد: 4 أعمدة --&gt;
+&lt;div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"&gt;
+</code></pre>
+
+<!-- ===== SECTION 7: MOBILE ===== -->
+<div class="section-divider"></div>
+<h2 id="mobile">7. تعديلات واجهة الجوال</h2>
+
+<p>واجهة الجوال تتحكم فيها هذه الملفات:</p>
+
+<div class="file-tree">
+<span class="highlight">MobileBottomNav.svelte</span>  ← شريط التنقل السفلي (يظهر تحت lg: = 1024px)
+<span class="highlight">MainAppLayout.svelte</span>    ← التخطيط العام (يضيف padding سفلي للجوال)
+</div>
+
+<h3>شريط التنقل السفلي (MobileBottomNav)</h3>
+<p>الملف: <span class="file-path">resources/js/components/MobileBottomNav.svelte</span></p>
+
+<pre><code>&lt;!-- الكلاس اللي يتحكم في ظهوره --&gt;
+&lt;nav class="fixed inset-x-0 bottom-0 z-50 border-t border-border
+            bg-background/95 backdrop-blur-lg
+            lg:hidden"&gt;
+    <!--           ^^^^^^^^^^ = مخفي في اللابتوب، ظاهر في الجوال --&gt;
+
+    &lt;!-- ارتفاع الشريط --&gt;
+    &lt;div class="flex items-center justify-around px-2" style="height: 4rem;"&gt;
+    <!--                                                          ^^^^^^^^^ --&gt;
+</code></pre>
+
+<h3>أمثلة تعديل واجهة الجوال</h3>
+
+<p><strong>مثال 1:</strong> تكبير أيقونات شريط التنقل السفلي:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;item.icon class="size-5 {isActive(item.href) ? 'text-primary' : 'text-muted-foreground'}" /&gt;
+
+&lt;!-- بعد (أكبر) --&gt;
+&lt;item.icon class="size-6 {isActive(item.href) ? 'text-primary' : 'text-muted-foreground'}" /&gt;
+</code></pre>
+
+<p><strong>مثال 2:</strong> تغيير ارتفاع الشريط السفلي:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;div class="flex items-center justify-around px-2" style="height: 4rem;"&gt;
+
+&lt;!-- بعد (أطول) --&gt;
+&lt;div class="flex items-center justify-around px-2" style="height: 5rem;"&gt;
+</code></pre>
+
+<p><strong>مثال 3:</strong> تكبير الزر الأوسط (الرئيسية):</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;div class="flex size-14 -mt-5 items-center justify-center rounded-full bg-primary"&gt;
+
+&lt;!-- بعد (أكبر وأبرز) --&gt;
+&lt;div class="flex size-16 -mt-7 items-center justify-center rounded-full bg-primary shadow-lg"&gt;
+</code></pre>
+
+<p><strong>مثال 4:</strong> تعديل حجم النص في الجوال:</p>
+<pre><code>&lt;!-- قبل --&gt;
+&lt;span class="text-[10px] font-medium"&gt;
+
+&lt;!-- بعد (أكبر شوي) --&gt;
+&lt;span class="text-xs font-medium"&gt;
+</code></pre>
+
+<p><strong>مثال 5:</strong> إضافة padding سفلي للمحتوى عشان ما ينحجب بالشريط:</p>
+<pre><code>&lt;!-- في MainAppLayout.svelte --&gt;
+&lt;main class="pb-20 lg:pb-0"&gt;
+&lt;!--   ^^^^^^     ^^^^^^ --&gt;
+&lt;!--   جوال:     لابتوب: --&gt;
+&lt;!--   padding   بدون    --&gt;
+&lt;!--   سفلي      padding --&gt;
+</code></pre>
+
+<!-- ===== SECTION 8: COMPONENTS ===== -->
+<div class="section-divider"></div>
+<h2 id="components">8. تعديل المكونات المشتركة</h2>
+
+<h3>الأزرار (Button)</h3>
+<p>الملف: <span class="file-path">resources/js/components/ui/button/</span></p>
+<pre><code>&lt;!-- لتغيير حجم كل الأزرار في الموقع، عدّل في ملف الزر --&gt;
+&lt;!-- مثال: تكبير الأزرار --&gt;
+class="h-11 px-6 text-sm"    /* أكبر */
+class="h-9 px-4 text-sm"     /* الحجم العادي */
+class="h-8 px-3 text-xs"     /* أصغر */
+</code></pre>
+
+<h3>البطاقات (Cards)</h3>
+<pre><code>&lt;!-- لتغيير شكل البطاقات في كل الموقع --&gt;
+&lt;div class="rounded-xl border border-border bg-card p-6 shadow-sm"&gt;
+&lt;!--   ^^^^^^^^^^                 ^^^^                ^^^^^^^^^ --&gt;
+&lt;!--   الزوايا الدائرية           padding             الظل       --&gt;
+</code></pre>
+
+<h3>حقول الإدخال (Inputs)</h3>
+<pre><code>&lt;!-- لتغيير حجم حقول الإدخال --&gt;
+&lt;input class="flex h-10 w-full rounded-md border border-input px-3 py-2 text-sm"&gt;
+&lt;!--           ^^^^                                      ^^^^^^^^ --&gt;
+&lt;!--           الارتفاع                                  النص      --&gt;
+</code></pre>
+
+<h3>الصور الرمزية (Avatars)</h3>
+<pre><code>&lt;!-- لتغيير حجم الصورة الرمزية --&gt;
+&lt;Avatar class="size-8 rounded-full"&gt;    /* 32px */
+&lt;Avatar class="size-10 rounded-full"&gt;   /* 40px */
+&lt;Avatar class="size-12 rounded-full"&gt;   /* 48px */
+</code></pre>
+
+<!-- ===== QUICK REFERENCE ===== -->
+<div class="section-divider"></div>
+<h2>مرجع سريع</h2>
+
+<h3>أريد أن...</h3>
+<table class="breakpoint-table">
+    <thead>
+        <tr>
+            <th>المطلوب</th>
+            <th>الملف</th>
+            <th>ماذا أعدل</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>أغير ألوان الموقع</td>
+            <td><code class="inline-code">resources/css/app.css</code></td>
+            <td>متغيرات <code class="inline-code">:root</code> و <code class="inline-code">.dark</code></td>
+        </tr>
+        <tr>
+            <td>أغير حجم الخط</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>كلاس <code class="inline-code">text-sm</code> / <code class="inline-code">text-lg</code> / إلخ</td>
+        </tr>
+        <tr>
+            <td>أغير ارتفاع شريط التنقل</td>
+            <td><code class="inline-code">DesktopTopNav.svelte</code> أو <code class="inline-code">MobileBottomNav.svelte</code></td>
+            <td>كلاس <code class="inline-code">h-16</code> أو <code class="inline-code">style="height: ..."</code></td>
+        </tr>
+        <tr>
+            <td>أضيف تأثير حركي</td>
+            <td>ملف Svelte المطلوب أو <code class="inline-code">app.css</code></td>
+            <td>كلاس <code class="inline-code">transition-*</code> + <code class="inline-code">hover:*</code></td>
+        </tr>
+        <tr>
+            <td>أخفي عنصر في الجوال</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>أضف <code class="inline-code">hidden lg:block</code></td>
+        </tr>
+        <tr>
+            <td>أخفي عنصر في اللابتوب</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>أضف <code class="inline-code">block lg:hidden</code></td>
+        </tr>
+        <tr>
+            <td>أغير المسافات</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>كلاس <code class="inline-code">p-*</code> / <code class="inline-code">m-*</code> / <code class="inline-code">gap-*</code></td>
+        </tr>
+        <tr>
+            <td>أغير شكل البطاقات</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>كلاس <code class="inline-code">rounded-*</code> + <code class="inline-code">shadow-*</code> + <code class="inline-code">border-*</code></td>
+        </tr>
+        <tr>
+            <td>أغير عدد الأعمدة</td>
+            <td>ملف Svelte المطلوب</td>
+            <td>كلاس <code class="inline-code">grid-cols-*</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="note tip" style="margin-top: 2rem;">
+    <strong>نصيحة للتطوير:</strong> شغّل <code class="inline-code">npm run dev</code> عشان تشوف التغييرات مباشرة في المتصفح.TailwindCSS يعيد البناء تلقائياً عند حفظ أي ملف.
+</div>
+
+<div class="note warning">
+    <strong>تحذير:</strong> لا تستخدم <code class="inline-code">h-screen</code> — استخدم <code class="inline-code">min-h-[100dvh]</code> بدلاً منها (هذا من قواعد التصميم في المشروع).
+</div>
+
+</div>
+</body>
+</html>

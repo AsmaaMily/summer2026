@@ -9,7 +9,7 @@ import Input from "./sidebar-input.svelte";
 import Inset from "./sidebar-inset.svelte";
 import MenuAction from "./sidebar-menu-action.svelte";
 import MenuBadge from "./sidebar-menu-badge.svelte";
-import MenuButton from "./sidebar-menu-button.svelte";
+import MenuButton from "./SidebarMenuButton.svelte";
 import MenuItem from "./sidebar-menu-item.svelte";
 import MenuSkeleton from "./sidebar-menu-skeleton.svelte";
 import MenuSubButton from "./sidebar-menu-sub-button.svelte";

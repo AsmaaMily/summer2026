@@ -14,7 +14,7 @@
         children?: Snippet;
     } = $props();
 
-    const isOpen = $derived(page.props.sidebarOpen);
+    let isOpen = $state(page.props.sidebarOpen);
 </script>
 
 {#if variant === 'header'}
@@ -22,7 +22,7 @@
         {@render children?.()}
     </div>
 {:else}
-    <SidebarProvider defaultOpen={isOpen}>
+    <SidebarProvider bind:open={isOpen}>
         {@render children?.()}
     </SidebarProvider>
 {/if}

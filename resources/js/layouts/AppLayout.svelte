@@ -1,17 +1,14 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import AppLayout from '@/layouts/app/AppSidebarLayout.svelte';
-    import type { BreadcrumbItem } from '@/types';
+    import AppLayout from '@/layouts/app/MainAppLayout.svelte';
 
     let {
-        breadcrumbs = [],
         children,
     }: {
-        breadcrumbs?: BreadcrumbItem[];
         children?: Snippet;
     } = $props();
 </script>
 
-<AppLayout {breadcrumbs}>
+<AppLayout>
     {@render children?.()}
 </AppLayout>
