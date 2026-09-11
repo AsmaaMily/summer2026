@@ -1,15 +1,11 @@
 <script module lang="ts">
-    export const layout = {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
-    };
+    import BlankLayout from '@/layouts/BlankLayout.svelte';
+    export const layout = BlankLayout;
 </script>
 
 <script lang="ts">
-    import { Form } from '@inertiajs/svelte';
-    import AppHead from '@/components/AppHead.svelte';
+    import { LineSquiggle } from 'lucide-svelte';    import AppHead from '@/components/AppHead.svelte';
     import InputError from '@/components/InputError.svelte';
-    import PasskeyVerify from '@/components/PasskeyVerify.svelte';
     import PasswordInput from '@/components/PasswordInput.svelte';
     import TextLink from '@/components/TextLink.svelte';
     import { Button } from '@/components/ui/button';
@@ -30,76 +26,82 @@
     } = $props();
 </script>
 
-<AppHead title="Log in" />
+<AppHead title="تسجيل الدخول" />
 
-{#if status}
-    <div class="mb-4 text-center text-sm font-medium text-green-600">
-        {status}
-    </div>
-{/if}
+<div class="flex min-h-[100dvh] w-full items-center justify-center bg-cover bg-center bg-no-repeat p-4 sm:p-8" style="background-image: url('/images/login.png')" dir="rtl">
 
-<PasskeyVerify />
+    <div class="w-full max-w-md rounded-3xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-10">
 
-<Form
-    {...store.form()}
-    resetOnSuccess={['password']}
-    class="flex flex-col gap-6"
->
-    {#snippet children({ errors, processing })}
-        <div class="grid gap-6">
-            <div class="grid gap-2">
-                <Label for="email">Email address</Label>
-                <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    required
-                    autocomplete="email"
-                    placeholder="email@example.com"
-                />
-                <InputError message={errors.email} />
-            </div>
+    <div class="mb-8 flex justify-center">
+    <LineSquiggle class="h-16 w-16 text-[#6669C6] drop-shadow-md" strokeWidth="2.5" />
+</div>
 
-            <div class="grid gap-2">
-                <div class="flex items-center justify-between">
-                    <Label for="password">Password</Label>
-                    {#if canResetPassword}
-                        <TextLink href={request()} class="text-sm">
-                            Forgot your password?
-                        </TextLink>
-                    {/if}
+        <Form
+            {...store.form()}
+            resetOnSuccess={['password']}
+            class="flex flex-col gap-6"
+        >
+            {#snippet children({ errors, processing })}
+                <div class="grid gap-6">
+                    <div class="grid gap-2">
+                        <Label for="email">البريد الإلكتروني</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            name="email"
+                            required
+                            autocomplete="email"
+                            placeholder="example@email.com"
+                            dir="ltr"
+                            class="bg-white/60 text-right focus:bg-white dark:bg-slate-800/60 dark:focus:bg-slate-800"
+                        />
+                        <InputError message={errors.email} />
+                    </div>
+
+                    <div class="grid gap-2">
+                        <div class="flex items-center justify-between">
+                            <Label for="password">كلمة المرور</Label>
+                            {#if canResetPassword}
+                                <TextLink href={request()} class="text-sm">
+                                    نسيت كلمة المرور؟
+                                </TextLink>
+                            {/if}
+                        </div>
+                        <PasswordInput
+                            id="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                            placeholder="كلمة المرور"
+                            dir="ltr"
+                            class="bg-white/60 text-right focus:bg-white dark:bg-slate-800/60 dark:focus:bg-slate-800"
+                        />
+                        <InputError message={errors.password} />
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <Label for="remember" class="flex items-center space-x-3 space-x-reverse">
+                            <Checkbox id="remember" name="remember" />
+                            <span>تذكرني</span>
+                        </Label>
+                    </div>
+
+                    <Button
+                        type="submit"
+                        class="mt-4 h-10 w-full border-none bg-gradient-to-r from-[#2B3070] via-[#6b6ec6] to-[#8C8DD8] text-white transition-opacity hover:opacity-90"
+                        disabled={processing}
+                        data-test="login-button"
+                    >
+                        {#if processing}<Spinner />{/if}
+                        تسجيل الدخول
+                    </Button>
                 </div>
-                <PasswordInput
-                    id="password"
-                    name="password"
-                    required
-                    autocomplete="current-password"
-                    placeholder="Password"
-                />
-                <InputError message={errors.password} />
-            </div>
 
-            <div class="flex items-center justify-between">
-                <Label for="remember" class="flex items-center space-x-3">
-                    <Checkbox id="remember" name="remember" />
-                    <span>Remember me</span>
-                </Label>
-            </div>
-
-            <Button
-                type="submit"
-                class="mt-4 w-full"
-                disabled={processing}
-                data-test="login-button"
-            >
-                {#if processing}<Spinner />{/if}
-                Log in
-            </Button>
-        </div>
-
-        <div class="text-center text-sm text-muted-foreground">
-            Don't have an account?
-            <TextLink href={register()}>Sign up</TextLink>
-        </div>
-    {/snippet}
-</Form>
+                <div class="text-center text-sm font-medium">
+                    ليس لديك حساب؟
+                    <TextLink href={register.url()}>إنشاء حساب</TextLink>
+                </div>
+            {/snippet}
+        </Form>
+    </div>
+</div>

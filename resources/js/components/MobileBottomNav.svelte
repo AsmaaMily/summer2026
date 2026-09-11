@@ -31,6 +31,7 @@
     } from '@/routes';
 
     const currentPath = $derived(page.url);
+    const shouldHide = $derived(currentPath === '/hello');
 
     function isActive(href: string): boolean {
         return currentPath === href;
@@ -40,7 +41,7 @@
     const user = $derived(auth.user);
 
     function handleLogout() {
-        router.flushAll();
+        router.visit(logout(), { method: 'post' });
     }
     const navItems = [
         { href: toUrl(transactions()), icon: ReceiptText, label: 'المعاملات' },
@@ -50,6 +51,7 @@
     ];
 </script>
 
+{#if !shouldHide}
 <nav class="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-background/95 backdrop-blur-lg lg:hidden">
     <div class="flex items-center justify-around px-2" style="height: 4rem;">
         {#each navItems as item (item.href)}
@@ -115,3 +117,4 @@
         </DropdownMenu>
     </div>
 </nav>
+{/if}

@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
-    Route::inertia('/', 'Onboarding')->name('home');
+    Route::redirect('/', '/login');
 });
 
 Route::middleware(['auth'])->group(function () {
