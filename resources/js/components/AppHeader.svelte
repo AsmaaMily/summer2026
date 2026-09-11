@@ -20,10 +20,9 @@
         DropdownMenuTrigger,
     } from '@/components/ui/dropdown-menu';
     import {
-        NavigationMenu,
+        NavigationMenuRoot,
         NavigationMenuItem,
         NavigationMenuList,
-        navigationMenuTriggerStyle,
     } from '@/components/ui/navigation-menu';
     import {
         Sheet,
@@ -85,14 +84,14 @@
             <!-- Mobile Menu -->
             <div class="lg:hidden">
                 <Sheet>
-                    <SheetTrigger asChild>
-                        {#snippet children(props)}
+                    <SheetTrigger>
+                        {#snippet child({ props })}
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 class="mr-2 h-9 w-9"
-                                onclick={props.onclick}
-                                aria-expanded={props['aria-expanded']}
+                                onclick={props.onclick as (e: MouseEvent) => void}
+                                aria-expanded={props['aria-expanded'] as boolean | undefined}
                             >
                                 <Menu class="h-5 w-5" />
                             </Button>
@@ -152,7 +151,7 @@
 
             <!-- Desktop Menu -->
             <div class="hidden h-full lg:flex lg:flex-1">
-                <NavigationMenu class="ml-10 flex h-full items-stretch">
+                <NavigationMenuRoot class="ml-10 flex h-full items-stretch">
                     <NavigationMenuList
                         class="flex h-full items-stretch space-x-2"
                     >
@@ -161,12 +160,12 @@
                                 class="relative flex h-full items-center"
                             >
                                 <Link
-                                    class="{navigationMenuTriggerStyle()} {url.whenCurrentUrl(
+                                    class="{url.whenCurrentUrl(
                                         item.href,
                                         url.currentUrl,
                                         activeItemStyles,
                                         '',
-                                    ) ?? ''} h-9 cursor-pointer px-4"
+                                    ) ?? ''} inline-flex h-9 cursor-pointer items-center px-4 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
                                     href={toUrl(item.href)}
                                 >
                                     {#if item.icon}
@@ -181,8 +180,8 @@
                                 {/if}
                             </NavigationMenuItem>
                         {/each}
-                    </NavigationMenuList>
-                </NavigationMenu>
+                        </NavigationMenuList>
+                    </NavigationMenuRoot>
             </div>
 
             <div class="ml-auto flex items-center space-x-2">
@@ -229,15 +228,15 @@
                 </div>
 
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        {#snippet children(props)}
+                    <DropdownMenuTrigger>
+                        {#snippet child({ props })}
                             <Button
                                 variant="ghost"
                                 size="icon"
                                 class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
-                                onclick={props.onclick}
-                                aria-expanded={props['aria-expanded']}
-                                data-state={props['data-state']}
+                                onclick={props.onclick as (e: MouseEvent) => void}
+                                aria-expanded={props['aria-expanded'] as boolean | undefined}
+                                data-state={props['data-state'] as string | undefined}
                             >
                                 <Avatar
                                     class="size-8 overflow-hidden rounded-full"

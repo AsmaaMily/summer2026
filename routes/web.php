@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function () {
     Route::inertia('profile', 'Profile')->name('profile');
     Route::inertia('ai-assistant', 'AiAssistant')->name('ai-assistant');
     Route::inertia('budget', 'BudgetGoals')->name('budget');
+    Route::inertia('hello', 'hello')->name('hello');
 });
 
 require __DIR__.'/settings.php';

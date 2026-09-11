@@ -7,7 +7,6 @@
     import {
         InputOTP,
         InputOTPGroup,
-        InputOTPSlot,
     } from '@/components/ui/input-otp';
     import { store } from '@/routes/two-factor/login';
     import type { TwoFactorConfigContent } from '@/types';
@@ -70,11 +69,9 @@
                             disabled={processing}
                             autofocus
                         >
-                            <InputOTPGroup>
-                                {#each { length: 6 } as _, i (i)}
-                                    <InputOTPSlot index={i} />
-                                {/each}
-                            </InputOTPGroup>
+                            {#snippet children({ cells })}
+                                <InputOTPGroup {cells} />
+                            {/snippet}
                         </InputOTP>
                     </div>
                     <InputError message={errors.code} />

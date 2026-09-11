@@ -33,7 +33,7 @@
     const currentPath = $derived(page.url);
 
     function isActive(href: string): boolean {
-        return currentPath === toUrl(href);
+        return currentPath === href;
     }
 
     const auth = $derived(page.props.auth);
@@ -43,10 +43,10 @@
         router.flushAll();
     }
     const navItems = [
-        { href: transactions(), icon: ReceiptText },
-        { href: aiAssistant(), icon: Bot   },
-        { href: dashboard(), icon: Home,  isCenter: true },
-        { href: budget(), icon: Target,  },
+        { href: toUrl(transactions()), icon: ReceiptText, label: 'المعاملات' },
+        { href: toUrl(aiAssistant()), icon: Bot, label: 'المساعد' },
+        { href: toUrl(dashboard()), icon: Home, label: 'الرئيسية', isCenter: true },
+        { href: toUrl(budget()), icon: Target, label: 'الميزانية' },
     ];
 </script>
 
@@ -55,7 +55,7 @@
         {#each navItems as item (item.href)}
             {#if item.isCenter}
                 <Link
-                    href={toUrl(item.href)}
+                    href={item.href}
                     class="flex flex-col items-center justify-center"
                 >
                     <div
@@ -71,7 +71,7 @@
                 </Link>
             {:else}
                 <Link
-                    href={toUrl(item.href)}
+                    href={item.href}
                     class="flex flex-col items-center justify-center gap-0.5 px-3 py-1"
                 >
                     <item.icon

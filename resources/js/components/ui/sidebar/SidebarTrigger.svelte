@@ -15,7 +15,7 @@
     variant="ghost"
     size="icon"
     class={cn('h-7 w-7', className)}
-    onclick={sidebar.toggleSidebar}
+    onclick={sidebar.toggle}
 >
     {#if sidebar.isMobile || sidebar.state === 'collapsed'}
         <PanelLeftOpen class="size-4" />

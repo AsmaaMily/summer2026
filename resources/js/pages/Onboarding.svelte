@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Link, page } from '@inertiajs/svelte';
     import {
         Wallet,
         ArrowLeft,
@@ -18,9 +17,6 @@
         CardTitle,
     } from '@/components/ui/card';
     import { Badge } from '@/components/ui/badge';
-    import { Separator } from '@/components/ui/separator';
-    import { login, register } from '@/routes';
-    import { toUrl } from '@/lib/utils';
     import AppLogoIcon from '@/components/AppLogoIcon.svelte';
 
     let step = $state<'welcome' | 'register' | 'login' | 'setup'>('welcome');

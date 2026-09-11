@@ -271,11 +271,9 @@
                                     disabled={processing}
                                     autofocus
                                 >
-                                    <InputOTPGroup>
-                                        {#each { length: 6 } as _, i (i)}
-                                            <InputOTPSlot index={i} />
-                                        {/each}
-                                    </InputOTPGroup>
+                                    {#snippet children({ cells })}
+                                        <InputOTPGroup {cells} />
+                                    {/snippet}
                                 </InputOTP>
                                 <InputError
                                     message={formErrors?.[

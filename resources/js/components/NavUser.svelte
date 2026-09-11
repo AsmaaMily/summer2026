@@ -22,7 +22,7 @@
 {#if user}
     <SidebarMenu>
         <SidebarMenuItem>
-            <DropdownMenu class="w-full">
+            <DropdownMenu>
                 <DropdownMenuTrigger>
                     {#snippet child({ props: triggerProps })}
                         <SidebarMenuButton

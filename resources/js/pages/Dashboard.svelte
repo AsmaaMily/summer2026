@@ -99,7 +99,7 @@
 
     <!-- ملخص الدخل والمصروفات -->
     <div class="grid grid-cols-3 gap-2 md:gap-4">
-        <Card class=" display: flex flex-direction: row justify-content:" >
+        <Card>
             <CardHeader
                 class="flex flex-row items-center justify-between space-y-0 pb-2"
             >
@@ -218,3 +218,4 @@
         </CardContent>
     </Card>
 </div>
+
