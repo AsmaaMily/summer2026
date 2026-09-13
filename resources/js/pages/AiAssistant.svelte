@@ -97,7 +97,7 @@
                                 class="h-12 flex-1 rounded-full border-white/40 bg-white/50 px-5 shadow-inner backdrop-blur-sm focus-visible:border-[#8C8DD8] focus-visible:ring-[#8C8DD8] dark:border-slate-600/50 dark:bg-slate-800/50 dark:text-white"
                             />
                             <Button type="submit" size="icon" disabled={!messageInput.trim()} class="size-12 shrink-0 rounded-full border-none bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#6b6ec6] text-white shadow-lg transition-transform hover:scale-105 hover:opacity-90 disabled:opacity-50">
-                                <Send class="mr-1 size-5" dir="rtl" />
+                                <Send class="mr-1 size-5" />
                             </Button>
                         </form>
                     </div>

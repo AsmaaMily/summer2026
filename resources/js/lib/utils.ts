@@ -22,3 +22,18 @@ export function toUrl(
 ): string {
     return typeof href === 'string' ? href : href.url;
 }
+
+export function formatAmount(amount: number): string {
+    return new Intl.NumberFormat('ar-SA', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}
+
+export function formatDate(dateStr: string): string {
+    return new Intl.DateTimeFormat('ar-SA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    }).format(new Date(dateStr));
+}
