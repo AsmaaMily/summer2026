@@ -27,13 +27,23 @@ export interface CategoryBreakdown {
     amount: number;
 }
 
+export type RecurringFrequency = 'daily' | 'weekly' | 'monthly' | 'yearly';
+
 export interface RecurringTransaction {
     id: number;
+    category_id: number;
     amount: number;
     type: 'income' | 'expense';
-    frequency: string;
+    frequency: RecurringFrequency;
+    day_of_month: number | null;
+    day_of_week: number | null;
+    start_date: string;
+    end_date: string | null;
     notes: string | null;
-    category: { id: number; name_ar: string };
+    payment_method: 'cash' | 'card';
+    is_active: boolean;
+    category: Category;
+    next_due_date?: string | null;
 }
 
 export interface DashboardProps {

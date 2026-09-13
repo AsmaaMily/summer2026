@@ -61,6 +61,61 @@ class RecurringTransaction extends Model
     }
 
     /**
+     * Resolve the next occurrence of this recurring transaction on or after the given date.
+     */
+    public function nextDueDate(?Carbon $from = null): ?Carbon
+    {
+        $from = ($from ?? Carbon::today())->copy()->startOfDay();
+        $start = Carbon::parse($this->start_date)->startOfDay();
+        $cursor = $from->greaterThan($start) ? $from->copy() : $start->copy();
+
+        $next = match ($this->frequency) {
+            RecurringFrequency::Daily => $cursor->copy(),
+            RecurringFrequency::Weekly => $cursor->copy()->addDays(
+                ((int) $this->day_of_week - $cursor->dayOfWeek + 7) % 7
+            ),
+            RecurringFrequency::Monthly => $this->nextMonthlyOccurrence($cursor),
+            RecurringFrequency::Yearly => $this->nextYearlyOccurrence($start, $cursor),
+        };
+
+        if ($this->end_date !== null && $next->greaterThan(Carbon::parse($this->end_date)->endOfDay())) {
+            return null;
+        }
+
+        return $next;
+    }
+
+    private function nextMonthlyOccurrence(Carbon $cursor): Carbon
+    {
+        $day = (int) $this->day_of_month;
+        $candidate = $this->dayInMonth($cursor, $day);
+
+        if ($candidate->lessThan($cursor)) {
+            $candidate = $this->dayInMonth($cursor->copy()->startOfMonth()->addMonthNoOverflow(), $day);
+        }
+
+        return $candidate;
+    }
+
+    private function nextYearlyOccurrence(Carbon $start, Carbon $cursor): Carbon
+    {
+        $candidate = $this->dayInMonth($cursor->copy()->month($start->month), $start->day);
+
+        if ($candidate->lessThan($cursor)) {
+            $candidate = $this->dayInMonth($candidate->copy()->addYearNoOverflow(), $start->day);
+        }
+
+        return $candidate;
+    }
+
+    private function dayInMonth(Carbon $month, int $day): Carbon
+    {
+        $day = min($day, $month->copy()->endOfMonth()->day);
+
+        return $month->copy()->startOfMonth()->addDays($day - 1)->startOfDay();
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo

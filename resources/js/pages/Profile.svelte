@@ -11,6 +11,8 @@
         Download,
         FileText,
         Wallet,
+        CalendarClock,
+        Power,
     } from 'lucide-svelte';
     import AppHead from '@/components/AppHead.svelte';
     import { Button } from '@/components/ui/button';
@@ -23,16 +25,20 @@
         TabsTrigger,
     } from '@/components/ui/tabs';
     import CategoryFormModal from '@/components/CategoryFormModal.svelte';
-    import { useForm } from '@inertiajs/svelte';
-    import type { Category } from '@/types';
+    import RecurringTransactionFormModal from '@/components/RecurringTransactionFormModal.svelte';
+    import { useForm, router } from '@inertiajs/svelte';
+    import { formatAmount, formatDate } from '@/lib/utils';
+    import type { Category, RecurringFrequency, RecurringTransaction } from '@/types';
 
     let {
         expenseCategories = [],
         incomeCategories = [],
+        recurringTransactions = [],
         monthlySalary = null,
     }: {
         expenseCategories: Category[];
         incomeCategories: Category[];
+        recurringTransactions: RecurringTransaction[];
         monthlySalary: number | null;
     } = $props();
 
@@ -40,6 +46,46 @@
     let editingCategory = $state<Category | null>(null);
     let currentCategoryType = $state<'income' | 'expense'>('expense');
     let deleteConfirmId = $state<number | null>(null);
+    let showRecurringModal = $state(false);
+    let editingRecurring = $state<RecurringTransaction | null>(null);
+
+    const allCategories = $derived([...expenseCategories, ...incomeCategories]);
+
+    const frequencyLabels: Record<RecurringFrequency, string> = {
+        daily: 'يومي',
+        weekly: 'أسبوعي',
+        monthly: 'شهري',
+        yearly: 'سنوي',
+    };
+
+    function openRecurringModal(recurring: RecurringTransaction | null = null) {
+        editingRecurring = recurring;
+        showRecurringModal = true;
+    }
+
+    function handleDeleteRecurring(id: number) {
+        if (confirm('هل أنت متأكد من حذف هذه الفاتورة الدورية؟')) {
+            router.delete(`/recurring-transactions/${id}`, {
+                preserveScroll: true,
+            });
+        }
+    }
+
+    function toggleRecurringActive(recurring: RecurringTransaction) {
+        router.put(`/recurring-transactions/${recurring.id}`, {
+            category_id: recurring.category_id,
+            amount: recurring.amount,
+            frequency: recurring.frequency,
+            day_of_month: recurring.frequency === 'monthly' ? recurring.day_of_month : null,
+            day_of_week: recurring.frequency === 'weekly' ? recurring.day_of_week : null,
+            start_date: recurring.start_date,
+            end_date: recurring.end_date,
+            notes: recurring.notes,
+            is_active: !recurring.is_active,
+        }, {
+            preserveScroll: true,
+        });
+    }
 
     const salaryForm = useForm({
         monthly_salary: monthlySalary?.toString() ?? '',
@@ -92,10 +138,11 @@
         <Tabs value="categories" class="w-full">
             
             <!-- أزرار التبديل الرئيسية -->
-            <TabsList class="flex h-14 w-full rounded-full border border-white/20 bg-white/30 p-1.5 shadow-inner dark:bg-slate-800/50 sm:w-fit sm:min-w-[400px]">
-                <TabsTrigger value="categories" class="flex-1 rounded-full text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">الفئات</TabsTrigger>
-                <TabsTrigger value="salary" class="flex-1 rounded-full text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">الراتب</TabsTrigger>
-                <TabsTrigger value="export" class="flex-1 rounded-full text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">التقارير</TabsTrigger>
+            <TabsList class="flex h-14 w-full rounded-full border border-white/20 bg-white/30 p-1.5 shadow-inner dark:bg-slate-800/50 sm:w-fit sm:min-w-[520px]">
+                <TabsTrigger value="categories" class="flex-1 rounded-full text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">الفئات</TabsTrigger>
+                <TabsTrigger value="recurring" class="flex-1 rounded-full text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">الفواتير الدورية</TabsTrigger>
+                <TabsTrigger value="salary" class="flex-1 rounded-full text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">الراتب</TabsTrigger>
+                <TabsTrigger value="export" class="flex-1 rounded-full text-xs sm:text-sm data-[state=active]:bg-white data-[state=active]:text-[#6b6ec6] data-[state=active]:shadow-sm dark:data-[state=active]:bg-slate-700 dark:data-[state=active]:text-white">التقارير</TabsTrigger>
             </TabsList>
 
             <!-- 1. إدارة الفئات -->
@@ -132,7 +179,7 @@
                                                 <Edit class="size-3.5" />
                                             </button>
                                             {#if !category.is_default}
-                                                <button onclick={() => handleDeleteCategory(category.id)} class="rounded-full p-1.5 text-slate-400 transition-colors hover:bg-rose-100 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400" title="حذف">
+                                                <button onclick={() => handleDeleteCategory(category.id)} class="rounded-full p-1.5 text-slate-400 transition-colors hover:bg-rose-100 hover:text-rose-400 dark:hover:bg-rose-500/30 dark:hover:text-rose-400" title="حذف">
                                                     <Trash2 class="size-3.5" />
                                                 </button>
                                             {/if}
@@ -167,7 +214,7 @@
                                                 <Edit class="size-3.5" />
                                             </button>
                                             {#if !category.is_default}
-                                                <button onclick={() => handleDeleteCategory(category.id)} class="rounded-full p-1.5 text-slate-400 transition-colors hover:bg-rose-100 hover:text-rose-600 dark:hover:bg-rose-900/30 dark:hover:text-rose-400" title="حذف">
+                                                <button onclick={() => handleDeleteCategory(category.id)} class="rounded-full p-1.5 text-slate-400 transition-colors hover:bg-rose-100 hover:text-rose-400 dark:hover:bg-rose-900/30 dark:hover:text-rose-400" title="حذف">
                                                     <Trash2 class="size-3.5" />
                                                 </button>
                                             {/if}
@@ -180,7 +227,78 @@
                 </Tabs>
             </TabsContent>
 
-            <!-- 2. تغيير الراتب -->
+            <!-- 2. الفواتير الدورية -->
+            <TabsContent value="recurring" class="mt-6 focus-visible:outline-none">
+                <div class="flex flex-col gap-4 rounded-2xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-8">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <CalendarClock class="size-5 text-[#8C8DD8]" />
+                                <h2 class="text-base font-bold text-slate-800 dark:text-white">الفواتير الدورية</h2>
+                            </div>
+                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">أضف الالتزامات المتكررة مثل الإيجار والرواتب والاشتراكات</p>
+                        </div>
+                        <Button onclick={() => openRecurringModal()} class="rounded-xl border-none bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#6b6ec6] text-white shadow-lg transition-transform hover:scale-105 hover:opacity-90">
+                            <Plus class="ml-2 size-4" />
+                            إضافة فاتورة دورية
+                        </Button>
+                    </div>
+
+                    {#if recurringTransactions.length === 0}
+                        <div class="mt-2 flex min-h-[200px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-400/50 bg-slate-100/30 dark:bg-slate-800/30">
+                            <CalendarClock class="size-10 text-[#8C8DD8]/50" />
+                            <div class="text-center">
+                                <p class="text-sm font-bold text-slate-700 dark:text-slate-300">لا توجد فواتير دورية</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">أضف أول فاتورة دورية لمتابعة التزاماتك</p>
+                            </div>
+                        </div>
+                    {:else}
+                        <div class="mt-2 flex flex-col gap-3">
+                            {#each recurringTransactions as recurring (recurring.id)}
+                                <div class="flex flex-col gap-3 rounded-xl border border-white/40 bg-white/60 p-4 dark:border-slate-600/50 dark:bg-slate-800/60 {recurring.is_active ? '' : 'opacity-60'}">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="flex flex-col gap-1 min-w-0">
+                                            <div class="flex items-center gap-2">
+                                                <span class="size-3 shrink-0 rounded-full" style="background-color: {recurring.category.color ?? '#6b6ec6'}"></span>
+                                                <span class="text-sm font-bold text-slate-800 dark:text-white">{recurring.category.name_ar}</span>
+                                                {#if !recurring.is_active}
+                                                    <span class="rounded-full bg-slate-200/70 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-700/70 dark:text-slate-300">متوقفة</span>
+                                                {/if}
+                                            </div>
+                                            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                                                <span>{frequencyLabels[recurring.frequency]}</span>
+                                                {#if recurring.next_due_date}
+                                                    <span>الاستحقاق القادم: {formatDate(recurring.next_due_date)}</span>
+                                                {/if}
+                                            </div>
+                                            {#if recurring.notes}
+                                                <span class="mt-0.5 max-w-[260px] truncate text-xs text-slate-400 dark:text-slate-500">{recurring.notes}</span>
+                                            {/if}
+                                        </div>
+
+                                        <div class="flex shrink-0 items-center gap-1">
+                                            <span class="me-1 text-sm font-bold text-rose-400">
+                                                -{formatAmount(recurring.amount)} ر.س
+                                            </span>
+                                            <Button variant="ghost" size="icon-sm" onclick={() => toggleRecurringActive(recurring)} title={recurring.is_active ? 'إيقاف' : 'تفعيل'}>
+                                                <Power class="size-4 {recurring.is_active ? 'text-emerald-300' : 'text-slate-400'}" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon-sm" onclick={() => openRecurringModal(recurring)}>
+                                                <Edit class="size-4" />
+                                            </Button>
+                                            <Button variant="ghost" size="icon-sm" onclick={() => handleDeleteRecurring(recurring.id)}>
+                                                <Trash2 class="size-4 text-rose-400" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+                </div>
+            </TabsContent>
+
+            <!-- 3. تغيير الراتب -->
             <TabsContent value="salary" class="mt-6 focus-visible:outline-none">
                 <div class="flex flex-col gap-6 rounded-2xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-8">
                     <div>
@@ -212,7 +330,7 @@
                 </div>
             </TabsContent>
 
-            <!-- 3. تصدير التقارير -->
+            <!-- 4. تصدير التقارير -->
             <TabsContent value="export" class="mt-6 focus-visible:outline-none">
                 <div class="flex flex-col gap-6 rounded-2xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-8">
                     <div>
@@ -250,4 +368,14 @@
     category={editingCategory}
     type={currentCategoryType}
     onClose={() => (showCategoryModal = false)}
+/>
+
+<RecurringTransactionFormModal
+    bind:open={showRecurringModal}
+    recurringTransaction={editingRecurring}
+    categories={allCategories}
+    onClose={() => {
+        showRecurringModal = false;
+        editingRecurring = null;
+    }}
 />

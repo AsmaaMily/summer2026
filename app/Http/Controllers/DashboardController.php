@@ -65,7 +65,14 @@ class DashboardController extends Controller
         $recurringUpcoming = RecurringTransaction::where('user_id', $user->id)
             ->where('is_active', true)
             ->with('category')
-            ->get();
+            ->get()
+            ->map(fn (RecurringTransaction $recurring) => [
+                ...$recurring->toArray(),
+                'next_due_date' => $recurring->nextDueDate()?->format('Y-m-d'),
+            ])
+            ->filter(fn (array $recurring) => $recurring['next_due_date'] !== null)
+            ->sortBy('next_due_date')
+            ->values();
 
         $categories = Category::where(function ($q) use ($user) {
             $q->where('user_id', $user->id)->orWhereNull('user_id');

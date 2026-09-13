@@ -92,7 +92,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.name_ar}
-                    <p class="text-xs text-rose-500">{form.errors.name_ar}</p>
+                    <p class="text-xs text-rose-400">{form.errors.name_ar}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -104,7 +104,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.name}
-                    <p class="text-xs text-rose-500">{form.errors.name}</p>
+                    <p class="text-xs text-rose-400">{form.errors.name}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -126,7 +126,7 @@
                     class="h-10 w-full bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.color}
-                    <p class="text-xs text-rose-500">{form.errors.color}</p>
+                    <p class="text-xs text-rose-400">{form.errors.color}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -138,7 +138,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.icon}
-                    <p class="text-xs text-rose-500">{form.errors.icon}</p>
+                    <p class="text-xs text-rose-400">{form.errors.icon}</p>
                 {/if}
             </div>
             <DialogFooter>

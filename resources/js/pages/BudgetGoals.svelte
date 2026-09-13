@@ -93,15 +93,15 @@
     }
 
     function getProgressColor(ratio: number): string {
-        if (ratio > 0.8) return 'from-rose-500 to-red-500';
-        if (ratio > 0.6) return 'from-amber-400 to-orange-500';
-        return 'from-emerald-400 to-green-500';
+        if (ratio > 0.8) return 'from-rose-400 to-red-400';
+        if (ratio > 0.6) return 'from-amber-200 to-orange-300';
+        return 'from-emerald-300 to-green-300';
     }
 
     function getStatusBadge(status: string): { text: string; class: string } {
         switch (status) {
             case 'completed':
-                return { text: 'مكتمل', class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' };
+                return { text: 'مكتمل', class: 'bg-emerald-100 text-emerald-400 dark:bg-emerald-400/30 dark:text-emerald-300' };
             case 'abandoned':
                 return { text: 'متوقف', class: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300' };
             default:

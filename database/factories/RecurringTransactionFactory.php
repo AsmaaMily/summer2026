@@ -28,7 +28,7 @@ class RecurringTransactionFactory extends Factory
             'day_of_month' => $frequency === 'monthly' ? fake()->numberBetween(1, 28) : null,
             'day_of_week' => $frequency === 'weekly' ? fake()->numberBetween(0, 6) : null,
             'start_date' => fake()->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
-            'end_date' => fake()->optional(0.3)->dateTimeBetween('now', '+2 years')->format('Y-m-d'),
+            'end_date' => fake()->boolean(30) ? fake()->dateTimeBetween('now', '+2 years')->format('Y-m-d') : null,
             'notes' => fake()->optional()->sentence(),
             'payment_method' => fake()->randomElement(['cash', 'card']),
             'is_active' => true,

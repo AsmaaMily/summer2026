@@ -164,9 +164,14 @@
                             <div class="flex items-center justify-between rounded-xl border border-white/20 bg-white/30 p-3 dark:border-slate-700/30 dark:bg-slate-800/30">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{item.category.name_ar}</span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">{frequencyLabels[item.frequency] ?? item.frequency}</span>
+                                    <span class="text-xs text-slate-500 dark:text-slate-400">
+                                        {frequencyLabels[item.frequency] ?? item.frequency}
+                                        {#if item.next_due_date}
+                                            · الاستحقاق: {formatDate(item.next_due_date)}
+                                        {/if}
+                                    </span>
                                 </div>
-                                <span class="text-sm font-bold {item.type === 'income' ? 'text-emerald-500' : 'text-rose-400'}">
+                                <span class="text-sm font-bold {item.type === 'income' ? 'text-emerald-300' : 'text-rose-400'}">
                                     {item.type === 'income' ? '+' : '-'}{formatAmount(item.amount)} ر.س
                                 </span>
                             </div>
@@ -209,7 +214,7 @@
                                         بطاقة
                                     {/if}
                                 </span>
-                                <span class="text-sm font-bold {t.type === 'income' ? 'text-emerald-500' : 'text-rose-400'}">
+                                <span class="text-sm font-bold {t.type === 'income' ? 'text-emerald-300' : 'text-rose-400'}">
                                     {t.type === 'income' ? '+' : '-'}{formatAmount(t.amount)} ر.س
                                 </span>
                             </div>

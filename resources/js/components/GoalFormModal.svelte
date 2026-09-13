@@ -94,7 +94,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.title_ar}
-                    <p class="text-xs text-rose-500">{form.errors.title_ar}</p>
+                    <p class="text-xs text-rose-400">{form.errors.title_ar}</p>
                 {/if}
             </div>
 
@@ -108,7 +108,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.target_amount}
-                    <p class="text-xs text-rose-500">{form.errors.target_amount}</p>
+                    <p class="text-xs text-rose-400">{form.errors.target_amount}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -120,7 +120,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.deadline}
-                    <p class="text-xs text-rose-500">{form.errors.deadline}</p>
+                    <p class="text-xs text-rose-400">{form.errors.deadline}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -132,7 +132,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.description}
-                    <p class="text-xs text-rose-500">{form.errors.description}</p>
+                    <p class="text-xs text-rose-400">{form.errors.description}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -148,7 +148,7 @@
                     </SelectContent>
                 </Select>
                 {#if form.errors.category_id}
-                    <p class="text-xs text-rose-500">{form.errors.category_id}</p>
+                    <p class="text-xs text-rose-400">{form.errors.category_id}</p>
                 {/if}
             </div>
             <DialogFooter>

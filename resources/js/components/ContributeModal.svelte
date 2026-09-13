@@ -59,7 +59,7 @@
                 الهدف: <span class="font-bold">{goal.title_ar}</span>
             </p>
             <p class="text-sm text-slate-600 dark:text-slate-400">
-                المتبقي: <span class="font-bold text-emerald-500">{(goal.target_amount - goal.current_amount).toLocaleString()} ر.س</span>
+                المتبقي: <span class="font-bold text-emerald-300">{(goal.target_amount - goal.current_amount).toLocaleString()} ر.س</span>
             </p>
         </div>
         <form onsubmit={handleSubmit} class="flex flex-col gap-4">
@@ -73,7 +73,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.amount}
-                    <p class="text-xs text-rose-500">{form.errors.amount}</p>
+                    <p class="text-xs text-rose-400">{form.errors.amount}</p>
                 {/if}
             </div>
             <DialogFooter>

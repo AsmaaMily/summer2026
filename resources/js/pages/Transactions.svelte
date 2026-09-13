@@ -60,7 +60,6 @@
         const search = overrides.search ?? filters.search;
         const type = overrides.type ?? filters.type;
         const categoryId = overrides.category_id ?? filters.category_id;
-        const payment = overrides.payment_method ?? filters.payment_method;
         const dateFrom = overrides.date_from ?? filters.date_from;
         const dateTo = overrides.date_to ?? filters.date_to;
         const page = overrides.page ?? '1';
@@ -68,7 +67,6 @@
         if (search) params.search = search;
         if (type && type !== 'all') params.type = type;
         if (categoryId && categoryId !== 'all') params.category_id = categoryId;
-        if (payment && payment !== 'all') params.payment_method = payment;
         if (dateFrom) params.date_from = dateFrom;
         if (dateTo) params.date_to = dateTo;
         if (page !== '1') params.page = page;
@@ -164,7 +162,7 @@
             <h1 class="text-xl font-bold md:text-2xl text-slate-800 dark:text-white drop-shadow-sm">سجل المعاملات</h1>
             <div class="flex items-center gap-3">
                 <Button variant="outline" size="sm" class="md:size-default rounded-xl border-white/40 bg-white/40 text-slate-700 shadow-sm backdrop-blur-md transition-colors hover:bg-white/60 hover:text-[#6b6ec6] dark:border-slate-600/50 dark:bg-slate-800/50 dark:text-slate-200 dark:hover:bg-slate-700">
-                    <Sparkles class="ml-2 size-4 text-amber-300" />
+                    <Sparkles class="ml-2 size-4 text-amber-200" />
                     <span class="hidden md:inline">تصنيف تلقائي</span>
                 </Button>
                 <Button size="sm" onclick={openAddModal} class="md:size-default rounded-xl border-none bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#6b6ec6] text-white transition-transform hover:scale-105 hover:opacity-90 shadow-lg">
@@ -213,19 +211,6 @@
                             {#each allCategoriesForFilter as cat (cat.id)}
                                 <SelectItem value={cat.id.toString()}>{cat.name_ar}</SelectItem>
                             {/each}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={filters.payment_method || 'all'} onValueChange={(v) => applyFilters({ payment_method: v })} type="single">
-                        <SelectTrigger class="h-12 w-[110px] sm:w-[130px] rounded-xl border-white/40 bg-white/50 backdrop-blur-md focus:ring-[#8C8DD8] dark:border-slate-600/50 dark:bg-slate-800/50">
-                            <span>
-                                {filters.payment_method === 'all' || !filters.payment_method ? 'طريقة الدفع' : filters.payment_method === 'cash' ? 'نقدي' : 'بطاقة'}
-                            </span>
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">الكل</SelectItem>
-                            <SelectItem value="cash">نقدي</SelectItem>
-                            <SelectItem value="card">بطاقة</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

@@ -95,7 +95,7 @@
                     </SelectContent>
                 </Select>
                 {#if form.errors.category_id}
-                    <p class="text-xs text-rose-500">{form.errors.category_id}</p>
+                    <p class="text-xs text-rose-400">{form.errors.category_id}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -108,7 +108,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.amount}
-                    <p class="text-xs text-rose-500">{form.errors.amount}</p>
+                    <p class="text-xs text-rose-400">{form.errors.amount}</p>
                 {/if}
             </div>
             <div class="space-y-2">
@@ -120,7 +120,7 @@
                     class="bg-white/50 dark:bg-slate-800/50"
                 />
                 {#if form.errors.month}
-                    <p class="text-xs text-rose-500">{form.errors.month}</p>
+                    <p class="text-xs text-rose-400">{form.errors.month}</p>
                 {/if}
             </div>
             <DialogFooter>

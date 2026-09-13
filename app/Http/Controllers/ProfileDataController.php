@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\RecurringTransaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,9 +28,23 @@ class ProfileDataController extends Controller
             ->orderBy('sort_order')
             ->get();
 
+        $recurringTransactions = RecurringTransaction::where('user_id', $user->id)
+            ->with('category')
+            ->orderByDesc('is_active')
+            ->orderBy('start_date')
+            ->get()
+            ->map(fn (RecurringTransaction $recurring) => [
+                ...$recurring->toArray(),
+                'start_date' => $recurring->start_date?->format('Y-m-d'),
+                'end_date' => $recurring->end_date?->format('Y-m-d'),
+                'next_due_date' => $recurring->nextDueDate()?->format('Y-m-d'),
+            ])
+            ->values();
+
         return Inertia::render('Profile', [
             'expenseCategories' => $expenseCategories,
             'incomeCategories' => $incomeCategories,
+            'recurringTransactions' => $recurringTransactions,
             'monthlySalary' => $user->monthly_salary,
         ]);
     }
