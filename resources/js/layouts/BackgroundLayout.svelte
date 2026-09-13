@@ -8,6 +8,7 @@
         User,
         LogOut,
     } from 'lucide-svelte';
+    import DesktopTopNav from '@/components/DesktopTopNav.svelte';
     import {
         Avatar,
         AvatarFallback,
@@ -58,8 +59,11 @@
     <!-- طبقة الضباب -->
     <div class="absolute inset-0 backdrop-blur-md"></div>
 
+    <!-- شريط التنقل العلوي على الديسكتوب -->
+    <DesktopTopNav />
+
     <!-- حاوية المحتوى مع مساحة سفلية (pb-24) لكي لا يختفي المحتوى خلف الشريط الثابت -->
-    <div class="relative z-10 flex min-h-[100dvh] w-full flex-col items-center justify-center p-4 pb-24 sm:p-8 sm:pb-24">
+    <div class="relative z-10 flex min-h-[100dvh] w-full flex-col items-center justify-center p-4 pb-24 sm:p-8 sm:pb-24 lg:pt-20">
         <slot />
     </div>
 

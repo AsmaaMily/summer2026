@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssistantStreamController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
@@ -50,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('export/csv', [ExportController::class, 'csv'])->name('export.csv');
 
     Route::inertia('ai-assistant', 'AiAssistant')->name('ai-assistant');
+    Route::post('ai-assistant/stream', AssistantStreamController::class)->name('ai-assistant.stream');
 });
 
 require __DIR__.'/settings.php';
