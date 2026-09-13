@@ -66,7 +66,11 @@
     ];
 
     function handleLogout() {
-        router.flushAll();
+        router.visit(logout(), { 
+            method: 'post',
+            preserveState: false,
+            preserveScroll: true
+        });
     }
 </script>
 

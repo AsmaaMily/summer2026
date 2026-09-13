@@ -38,7 +38,7 @@
             Resend verification email
         </Button>
 
-        <TextLink href={logout()} as="button" class="mx-auto block text-sm">
+        <TextLink href={logout()} method="post" as="button" class="mx-auto block text-sm">
             Log out
         </TextLink>
     {/snippet}

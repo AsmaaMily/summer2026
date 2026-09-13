@@ -20,8 +20,11 @@ class BudgetController extends Controller
         $user = Auth::user();
         $currentMonth = $request->get('month', Carbon::now()->format('Y-m'));
 
+        $monthStart = Carbon::parse($currentMonth)->startOfMonth();
+        $monthEnd = Carbon::parse($currentMonth)->endOfMonth();
+
         $budgets = Budget::where('user_id', $user->id)
-            ->where('month', $currentMonth)
+            ->whereBetween('month', [$monthStart->toDateString(), $monthEnd->toDateString()])
             ->with('category')
             ->get();
 

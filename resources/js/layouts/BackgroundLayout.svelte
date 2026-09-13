@@ -42,7 +42,11 @@
     const user = $derived(auth.user);
 
     function handleLogout() {
-        router.visit(logout(), { method: 'post' });
+        router.visit(logout(), { 
+            method: 'post',
+            preserveState: false,
+            preserveScroll: true
+        });
     }
 
     const navItems = [

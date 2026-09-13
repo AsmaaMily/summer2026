@@ -5,7 +5,8 @@
 </script>
 
 <script lang="ts">
-    import ArrowUp from 'lucide-svelte/icons/arrow-up';
+    import Bot from 'lucide-svelte/icons/bot';
+    import Send from 'lucide-svelte/icons/send';
     import ListChecks from 'lucide-svelte/icons/list-checks';
     import PlusCircle from 'lucide-svelte/icons/plus-circle';
     import RotateCcw from 'lucide-svelte/icons/rotate-ccw';
@@ -71,8 +72,8 @@
 
     const EXAMPLES: { text: string; icon: ExampleIcon }[] = [
         { text: 'كم صرفت هذا الشهر؟', icon: TrendingDown },
-        { text: 'أضف مصروف ٥٠ ريال قهوة أمس', icon: PlusCircle },
-        { text: 'اعرض أكبر ٥ مصروفات', icon: ListChecks },
+        { text: 'أضف مصروف 50 ريال قهوة أمس', icon: PlusCircle },
+        { text: 'اعرض أكبر 5 مصروفات', icon: ListChecks },
         { text: 'احذف آخر عملية', icon: Trash2 },
     ];
 
@@ -210,15 +211,12 @@
                     switch (frame.type) {
                         case 'text':
                             appendDelta(frame.delta);
-
                             break;
                         case 'tool_call':
                             appendToolCallFrame(frame);
-
                             break;
                         case 'tool_result':
                             applyToolResultFrame(frame);
-
                             break;
                         case 'error':
                             messages.push({
@@ -228,7 +226,6 @@
                                 error: true,
                                 retry: () => retry(messageText),
                             });
-
                             break;
                         case 'done':
                             break;
@@ -241,8 +238,7 @@
                 messages.push({
                     id: nextId(),
                     role: 'assistant',
-                    content:
-                        'تعذر الاتصال بالمساعد. تحقق من اتصالك وحاول مرة أخرى.',
+                    content: 'تعذر الاتصال بالمساعد. تحقق من اتصالك وحاول مرة أخرى.',
                     error: true,
                     retry: () => retry(messageText),
                 });
@@ -266,7 +262,6 @@
 
             if (last.role === 'assistant' && last.error) {
                 messages.pop();
-
                 continue;
             }
 
@@ -296,216 +291,208 @@
     }
 </script>
 
+<svg width="0" height="0" class="absolute h-0 w-0 pointer-events-none">
+    <defs>
+        <linearGradient id="icon-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#3c3f98" />
+            <stop offset="100%" stop-color="#8C8DD8" />
+        </linearGradient>
+    </defs>
+</svg>
+
 <AppHead title="المساعد المالي" />
 
-<div class="flex h-[calc(100dvh-7rem)] flex-1 flex-col">
-    <!-- Header -->
-    <header
-        class="flex items-center justify-between gap-3 border-b border-border/60 bg-background/80 px-4 py-3 backdrop-blur-xl md:px-6"
-    >
-        <div class="flex min-w-0 items-center gap-3">
-            <AssistantAvatar size="md" />
-            <div class="min-w-0">
-                <h1 class="truncate text-sm font-semibold">المساعد المالي</h1>
-                <p
-                    class="flex items-center gap-1.5 text-xs text-muted-foreground"
-                >
+<!-- الحاوية الأساسية مطابقة للداشبورد -->
+<div class="mx-auto w-full max-w-5xl p-4 sm:p-8">
+    <div class="flex h-[calc(100vh-8rem)] min-h-[600px] flex-col gap-4 md:gap-6">
+        
+        <!-- Header: مطابق لتصميم العناوين في الداشبورد -->
+        <div class="mb-2 flex items-center justify-between">
+            <div class="flex flex-col">
+                <h1 class="text-xl font-bold text-slate-800 drop-shadow-sm dark:text-white md:text-2xl">
+                    المساعد الذكي
+                </h1>
+                <p class="mt-1 flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
                     <span
-                        class="size-1.5 rounded-full bg-income {streaming
-                            ? 'animate-pulse'
-                            : ''}"
+                        class="size-1.5 rounded-full bg-emerald-500 {streaming ? 'animate-pulse' : ''}"
                     ></span>
                     {streaming ? 'يكتب الآن…' : 'متصل'}
                 </p>
             </div>
-        </div>
-        <Button
-            variant="ghost"
-            size="sm"
-            class="gap-1.5 text-muted-foreground"
-            onclick={resetConversation}
-            disabled={messages.length === 0}
-        >
-            <RotateCcw class="size-3.5" />
-            <span class="hidden sm:inline">محادثة جديدة</span>
-        </Button>
-    </header>
-
-    <!-- Messages -->
-    <div
-        bind:this={scrollContainer}
-        class="flex-1 overflow-y-auto scroll-smooth px-4 py-6 md:px-6"
-        aria-live="polite"
-        aria-label="منطقة الرسائل"
-    >
-        <div class="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-5">
-            {#if messages.length === 0}
-                <!-- Welcome state -->
-                <div
-                    class="flex flex-1 flex-col items-center justify-center gap-8 py-10 text-center"
+            
+            <div class="flex items-center gap-3">
+                <Button
+                    variant="outline"
+                    size="sm"
+                    class="border-white/40 bg-white/50 text-slate-700 shadow-sm backdrop-blur-md transition-colors hover:bg-white/60 hover:text-[#6b6ec6] dark:border-slate-600/50 dark:bg-slate-800/50 dark:text-slate-200 dark:hover:bg-slate-700 md:size-default"
+                    onclick={resetConversation}
+                    disabled={messages.length === 0}
                 >
-                    <div class="flex flex-col items-center gap-5">
-                        <div class="relative">
-                            <div
-                                class="absolute inset-0 -z-10 rounded-full bg-primary/25 blur-2xl"
-                            ></div>
-                            <AssistantAvatar
-                                size="lg"
-                                class="animate-fade-in-up"
-                            />
-                        </div>
-                        <div class="space-y-2">
-                            <h2 class="text-xl font-semibold tracking-tight">
-                                كيف أقدر أساعدك؟
-                            </h2>
-                            <p
-                                class="mx-auto max-w-sm text-sm text-muted-foreground"
-                            >
-                                اسأل عن مصروفاتك، أضِف أو عدّل أو احذف عمليات —
-                                كل شيء بالمحادثة.
-                            </p>
-                        </div>
-                    </div>
+                    <RotateCcw class="size-4 md:ml-1.5" />
+                    <span class="hidden md:inline">محادثة جديدة</span>
+                </Button>
+            </div>
+        </div>
 
-                    <div class="grid w-full gap-2.5 sm:grid-cols-2">
-                        {#each EXAMPLES as example (example.text)}
-                            <button
-                                type="button"
-                                class="group flex items-center gap-3 rounded-xl border border-border/70 bg-card px-4 py-3.5 text-start text-sm shadow-soft transition-all hover:border-primary/40 hover:bg-accent/50 active:scale-[0.98]"
-                                onclick={() => void send(example.text)}
-                            >
-                                <span
-                                    class="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/15"
-                                >
-                                    <example.icon class="size-4.5" />
-                                </span>
-                                <span class="min-w-0 flex-1"
-                                    >{example.text}</span
-                                >
-                            </button>
-                        {/each}
-                    </div>
-
-                    <p
-                        class="flex items-center gap-1.5 text-xs text-muted-foreground"
-                    >
-                        <Sparkles class="size-3.5" />
-                        مدعوم بالذكاء الاصطناعي — راجِع الملخص بعد كل عملية
-                    </p>
-                </div>
-            {:else}
-                {#each messages as message (message.id)}
-                    {#if message.role === 'user'}
-                        <div class="flex animate-fade-in-up justify-end">
-                            <div
-                                class="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-ee-md bg-primary px-4 py-2.5 text-sm leading-relaxed text-primary-foreground shadow-soft tabular-nums"
-                                dir="auto"
-                            >
-                                {message.content}
-                            </div>
-                        </div>
-                    {:else if message.role === 'tool'}
-                        <div class="animate-fade-in-up ps-10">
-                            <ToolCallCard call={message.call} />
-                        </div>
-                    {:else}
-                        <div
-                            class="flex animate-fade-in-up items-start gap-2.5"
-                        >
-                            <AssistantAvatar size="sm" class="mt-0.5" />
-                            <div
-                                class="flex min-w-0 max-w-[85%] flex-col gap-1.5"
-                            >
-                                <div
-                                    class="rounded-2xl rounded-ss-md px-4 py-3 text-sm leading-relaxed
-                                        {message.error
-                                        ? 'whitespace-pre-wrap border border-destructive/40 bg-destructive/10 text-destructive'
-                                        : 'border border-border/70 bg-card shadow-soft'}"
-                                    dir="auto"
-                                >
-                                    {#if message.error}
-                                        {message.content}
-                                    {:else}
-                                        <MarkdownContent
-                                            source={message.content}
-                                        />
-                                    {/if}
+        <!-- حاوية المحادثة الرئيسية (نفس ستايل كروت الداشبورد) -->
+        <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-white/30 bg-white/50 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60">
+            
+            <!-- Messages Area -->
+            <div
+                bind:this={scrollContainer}
+                class="flex-1 overflow-y-auto scroll-smooth px-4 py-6 focus-visible:outline-none md:px-6 md:py-8"
+                aria-live="polite"
+                aria-label="منطقة الرسائل"
+            >
+                <div class="mx-auto flex min-h-full w-full max-w-3xl flex-col gap-5">
+                    {#if messages.length === 0}
+                        <!-- Welcome state -->
+                        <div class="flex flex-1 flex-col items-center justify-center gap-8 py-10 text-center">
+                            <div class="flex flex-col items-center gap-6">
+                                <!-- أيقونة الروبوت بتدرج الأزرار -->
+                                <div class="relative flex items-center justify-center">
+                                    <div class="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#6b6ec6]/30 to-[#8C8DD8]/30 blur-2xl"></div>
+                                    <div class="flex size-20 items-center justify-center rounded-2xl bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#6b6ec6] shadow-xl animate-fade-in-up">
+                                        <Bot class="size-10 text-white" />
+                                    </div>
                                 </div>
-                                {#if message.retry}
+                                <div class="space-y-2">
+                                    <h2 class="text-xl font-bold text-slate-800 drop-shadow-sm dark:text-white">
+                                        كيف أقدر أساعدك؟
+                                    </h2>
+                                    <p class="mx-auto max-w-sm text-sm text-slate-600 dark:text-slate-300">
+                                        اسأل عن مصروفاتك، أضِف أو عدّل أو احذف عمليات — كل شيء بالمحادثة.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- أزرار الأمثلة بتصميم زجاجي -->
+                            <div class="grid w-full gap-3 sm:grid-cols-2">
+                                {#each EXAMPLES as example (example.text)}
                                     <button
                                         type="button"
-                                        class="flex w-fit items-center gap-1.5 rounded-md px-1 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground disabled:opacity-50"
-                                        onclick={message.retry}
-                                        disabled={streaming}
+                                        class="group flex items-center gap-3 rounded-2xl border border-white/40 bg-white/40 px-4 py-3.5 text-start text-sm shadow-sm backdrop-blur-md transition-all hover:bg-white/60 hover:text-[#6b6ec6] active:scale-[0.98] dark:border-slate-600/50 dark:bg-slate-800/40 dark:text-slate-200 dark:hover:bg-slate-700/60"
+                                        onclick={() => void send(example.text)}
                                     >
-                                        <RotateCcw class="size-3" />
-                                        إعادة المحاولة
+                                        <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white/50 text-[#8C8DD8] shadow-inner transition-colors group-hover:bg-white/80 dark:bg-slate-700/50">
+                                            <example.icon class="size-4.5" />
+                                        </span>
+                                        <span class="min-w-0 flex-1 font-medium">{example.text}</span>
                                     </button>
-                                {/if}
+                                {/each}
                             </div>
+
+                            <p class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+                                <Sparkles class="size-3.5 text-amber-200" />
+                                مدعوم بالذكاء الاصطناعي — راجِع الملخص بعد كل عملية
+                            </p>
                         </div>
+                    {:else}
+                        {#each messages as message (message.id)}
+                            {#if message.role === 'user'}
+                                <!-- رسالة المستخدم -->
+                                <div class="flex animate-fade-in-up justify-end">
+                                    <div
+                                        class="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-ee-sm bg-gradient-to-r from-[#3c3f98] to-[#6b6ec6] px-4 py-2.5 text-sm leading-relaxed text-white shadow-md tabular-nums"
+                                        dir="auto"
+                                    >
+                                        {message.content}
+                                    </div>
+                                </div>
+                            {:else if message.role === 'tool'}
+                                <div class="animate-fade-in-up ps-10">
+                                    <ToolCallCard call={message.call} />
+                                </div>
+                            {:else}
+                                <!-- رسالة المساعد -->
+                                <div class="flex animate-fade-in-up items-start gap-2.5">
+                                    <AssistantAvatar size="sm" class="mt-0.5 shadow-sm" />
+                                    <div class="flex min-w-0 max-w-[85%] flex-col gap-1.5">
+                                        <div
+                                            class="rounded-2xl rounded-ss-sm px-4 py-3 text-sm leading-relaxed shadow-sm backdrop-blur-md
+                                                {message.error
+                                                ? 'whitespace-pre-wrap border border-rose-400/50 bg-rose-50/70 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400'
+                                                : 'border border-white/40 bg-white/70 text-slate-800 dark:border-slate-600/50 dark:bg-slate-800/70 dark:text-slate-100'}"
+                                            dir="auto"
+                                        >
+                                            {#if message.error}
+                                                {message.content}
+                                            {:else}
+                                                <MarkdownContent source={message.content} />
+                                            {/if}
+                                        </div>
+                                        {#if message.retry}
+                                            <button
+                                                type="button"
+                                                class="flex w-fit items-center gap-1.5 rounded-md px-1 py-0.5 text-xs font-medium text-slate-500 transition-colors hover:text-[#6b6ec6] disabled:opacity-50 dark:text-slate-400 dark:hover:text-white"
+                                                onclick={message.retry}
+                                                disabled={streaming}
+                                            >
+                                                <RotateCcw class="size-3" />
+                                                إعادة المحاولة
+                                            </button>
+                                        {/if}
+                                    </div>
+                                </div>
+                            {/if}
+                        {/each}
+
+                        {#if showTypingIndicator}
+                            <div class="flex animate-fade-in items-start gap-2.5">
+                                <AssistantAvatar size="sm" class="mt-0.5 shadow-sm" />
+                                <div class="flex items-center rounded-2xl rounded-ss-sm border border-white/40 bg-white/70 px-4 py-3.5 shadow-sm backdrop-blur-md dark:border-slate-600/50 dark:bg-slate-800/70">
+                                    <TypingIndicator />
+                                </div>
+                            </div>
+                        {/if}
                     {/if}
-                {/each}
-
-                {#if showTypingIndicator}
-                    <div class="flex animate-fade-in items-start gap-2.5">
-                        <AssistantAvatar size="sm" class="mt-0.5" />
-                        <div
-                            class="flex items-center rounded-2xl rounded-ss-md border border-border/70 bg-card px-4 py-3.5 shadow-soft"
-                        >
-                            <TypingIndicator />
-                        </div>
-                    </div>
-                {/if}
-            {/if}
-        </div>
-    </div>
-
-    <!-- Composer -->
-    <div
-        class="border-t border-border/60 bg-background/80 px-4 pb-3 pt-3 backdrop-blur-xl md:pt-4"
-    >
-        <div class="mx-auto w-full max-w-3xl">
-            <div
-                class="flex items-end gap-2 rounded-2xl border border-border/70 bg-card p-1.5 shadow-soft transition-colors focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/15"
-            >
-                <Textarea
-                    bind:ref={textareaEl}
-                    bind:value={input}
-                    onkeydown={handleKeydown}
-                    rows={1}
-                    placeholder="اكتب رسالتك…"
-                    disabled={streaming}
-                    class="max-h-40 min-h-11 resize-none border-0 bg-transparent px-3 py-2.5 shadow-none focus-visible:ring-0 dark:bg-transparent"
-                    dir="auto"
-                />
-                {#if streaming}
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        class="size-11 shrink-0 rounded-xl"
-                        onclick={stop}
-                        aria-label="إيقاف التوليد"
-                    >
-                        <Square class="size-4 fill-current" />
-                    </Button>
-                {:else}
-                    <Button
-                        type="button"
-                        size="icon"
-                        class="size-11 shrink-0 rounded-xl transition-transform active:scale-90"
-                        onclick={() => void send(input)}
-                        disabled={input.trim() === ''}
-                        aria-label="إرسال"
-                    >
-                        <ArrowUp class="size-5" />
-                    </Button>
-                {/if}
+                </div>
             </div>
-            <p class="mt-2 text-center text-[0.7rem] text-muted-foreground">
-                Enter للإرسال · Shift+Enter لسطر جديد
-            </p>
+
+            <!-- Composer: صندوق الإدخال الزجاجي -->
+            <div class="border-t border-white/20 bg-white/30 p-4 dark:bg-slate-900/40 md:px-6 md:py-5">
+                <div class="mx-auto w-full max-w-3xl">
+                    <div class="flex items-end gap-2 rounded-3xl border border-white/40 bg-white/60 p-1.5 shadow-inner backdrop-blur-md transition-colors focus-within:border-[#8C8DD8] focus-within:ring-2 focus-within:ring-[#8C8DD8]/30 dark:border-slate-600/50 dark:bg-slate-800/60">
+                        <Textarea
+                            bind:ref={textareaEl}
+                            bind:value={input}
+                            onkeydown={handleKeydown}
+                            rows={1}
+                            placeholder="اكتب رسالتك هنا..."
+                            disabled={streaming}
+                            class="max-h-40 min-h-11 resize-none border-0 bg-transparent px-4 py-2.5 text-slate-800 shadow-none placeholder:text-slate-500 focus-visible:ring-0 dark:text-white"
+                            dir="auto"
+                        />
+                        {#if streaming}
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                class="size-11 shrink-0 rounded-full shadow-lg transition-transform hover:scale-105 active:scale-90"
+                                onclick={stop}
+                                aria-label="إيقاف التوليد"
+                            >
+                                <Square class="size-4 fill-current" />
+                            </Button>
+                        {:else}
+                            <Button
+                                type="button"
+                                size="icon"
+                                class="size-11 shrink-0 rounded-full border-none bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#6b6ec6] text-white shadow-lg transition-transform hover:scale-105 active:scale-90 disabled:opacity-50"
+                                onclick={() => void send(input)}
+                                disabled={input.trim() === ''}
+                                aria-label="إرسال"
+                            >
+                                <!-- تعديل المسافة -mr-1 لجعل الطائرة الورقية تبدو في المنتصف بصرياً -->
+                                <Send class="size-5 -mr-1" />
+                            </Button>
+                        {/if}
+                    </div>
+                    <p class="mt-2 text-center text-[0.7rem] font-medium text-slate-500 dark:text-slate-400">
+                        Enter للإرسال · Shift+Enter لسطر جديد
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </div>

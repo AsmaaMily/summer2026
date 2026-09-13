@@ -10,6 +10,7 @@
     } from '@/components/ui/dialog';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
+    import { formatAmount } from '@/lib/utils';
     import type { FinancialGoal } from '@/types';
 
     let {
@@ -59,7 +60,7 @@
                 الهدف: <span class="font-bold">{goal.title_ar}</span>
             </p>
             <p class="text-sm text-slate-600 dark:text-slate-400">
-                المتبقي: <span class="font-bold text-emerald-300">{(goal.target_amount - goal.current_amount).toLocaleString()} ر.س</span>
+                المتبقي: <span class="font-bold text-emerald-300">{formatAmount(goal.target_amount - goal.current_amount)} ر.س</span>
             </p>
         </div>
         <form onsubmit={handleSubmit} class="flex flex-col gap-4">

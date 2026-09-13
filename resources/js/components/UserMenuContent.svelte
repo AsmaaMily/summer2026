@@ -23,7 +23,11 @@
     function handleLogout(propsOnClick?: () => void) {
         return () => {
             propsOnClick?.();
-            router.flushAll();
+            router.visit(logout(), { 
+                method: 'post',
+                preserveState: false,
+                preserveScroll: true
+            });
         };
     }
 </script>
@@ -52,15 +56,13 @@
 <DropdownMenuSeparator />
 <DropdownMenuItem>
     {#snippet child({ props })}
-        <Link
+        <button
             class={props.class}
-            href={logout()}
-            as="button"
             onclick={handleLogout(props.onClick as () => void)}
             data-test="logout-button"
         >
             <LogOut class="mr-2 h-4 w-4" />
             Log out
-        </Link>
+        </button>
     {/snippet}
 </DropdownMenuItem>

@@ -20,6 +20,7 @@
     import GoalFormModal from '@/components/GoalFormModal.svelte';
     import { Badge } from '@/components/ui/badge';
     import { Button } from '@/components/ui/button';
+    import { formatAmount, formatDate } from '@/lib/utils';
     import type { Budget, FinancialGoal, Category } from '@/types';
 
     let {
@@ -136,15 +137,15 @@ return 'from-amber-200 to-orange-300';
             <div class="flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-slate-300/30 dark:border-slate-700/50 pb-3">
                     <span class="text-sm font-medium text-slate-600 dark:text-slate-300">إجمالي الميزانية</span>
-                    <span class="text-lg font-bold text-slate-800 dark:text-white">{totalBudget.toLocaleString()} ر.س</span>
+                    <span class="text-lg font-bold text-slate-800 dark:text-white">{formatAmount(totalBudget)} ر.س</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-slate-300/30 dark:border-slate-700/50 pb-3">
                     <span class="text-sm font-medium text-slate-600 dark:text-slate-300">المصروف</span>
-                    <span class="text-lg font-bold text-rose-400">{totalSpent.toLocaleString()} ر.س</span>
+                    <span class="text-lg font-bold text-rose-400">{formatAmount(totalSpent)} ر.س</span>
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-sm font-medium text-slate-600 dark:text-slate-300">المتبقي</span>
-                    <span class="text-lg font-bold {remaining >= 0 ? 'text-emerald-300' : 'text-rose-400'}">{remaining.toLocaleString()} ر.س</span>
+                    <span class="text-lg font-bold {remaining >= 0 ? 'text-emerald-300' : 'text-rose-400'}">{formatAmount(remaining)} ر.س</span>
                 </div>
             </div>
         </div>
@@ -197,8 +198,8 @@ return 'from-amber-200 to-orange-300';
                                 </div>
                             </div>
                             <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-                                <span>المصروف: {budget.spent.toLocaleString()} ر.س</span>
-                                <span>الميزانية: {budget.amount.toLocaleString()} ر.س</span>
+                                <span>المصروف: {formatAmount(budget.spent)} ر.س</span>
+                                <span>الميزانية: {formatAmount(budget.amount)} ر.س</span>
                             </div>
                             <div class="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                                 <div class="h-full rounded-full bg-gradient-to-r {getProgressColor(ratio)} transition-all" style="width: {percentage}%"></div>
@@ -254,7 +255,7 @@ return 'from-amber-200 to-orange-300';
                                         <span class="rounded-full px-2 py-0.5 text-xs font-medium {statusBadge.class}">{statusBadge.text}</span>
                                     </div>
                                     {#if goal.deadline}
-                                        <span class="text-xs text-slate-500 dark:text-slate-400">الموعد: {new Date(goal.deadline).toLocaleDateString('ar-SA')}</span>
+                                        <span class="text-xs text-slate-500 dark:text-slate-400">الموعد: {formatDate(goal.deadline)}</span>
                                     {/if}
                                 </div>
                                 <div class="flex items-center gap-1">
@@ -272,8 +273,8 @@ return 'from-amber-200 to-orange-300';
                                 </div>
                             </div>
                             <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-                                <span>المحقق: {goal.current_amount.toLocaleString()} ر.س</span>
-                                <span>المستهدف: {goal.target_amount.toLocaleString()} ر.س</span>
+                                <span>المحقق: {formatAmount(goal.current_amount)} ر.س</span>
+                                <span>المستهدف: {formatAmount(goal.target_amount)} ر.س</span>
                             </div>
                             <div class="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
                                 <div class="h-full rounded-full bg-gradient-to-r from-[#6b6ec6] to-[#8C8DD8] transition-all" style="width: {Math.min(progress, 100)}%"></div>
