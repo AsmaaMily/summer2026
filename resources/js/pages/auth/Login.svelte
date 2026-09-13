@@ -4,7 +4,9 @@
 </script>
 
 <script lang="ts">
-    import { LineSquiggle } from 'lucide-svelte';    import AppHead from '@/components/AppHead.svelte';
+    import { Form } from '@inertiajs/svelte';
+    import LineSquiggle from 'lucide-svelte/icons/line-squiggle';
+    import AppHead from '@/components/AppHead.svelte';
     import InputError from '@/components/InputError.svelte';
     import PasswordInput from '@/components/PasswordInput.svelte';
     import TextLink from '@/components/TextLink.svelte';
@@ -30,11 +32,14 @@
 
 <div class="flex min-h-[100dvh] w-full items-center justify-center bg-cover bg-center bg-no-repeat p-4 sm:p-8" style="background-image: url('/images/login.png')" dir="rtl">
 
-    <div class="w-full max-w-md rounded-3xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-10">
+    <!-- تم تغيير max-w-md إلى max-w-lg لتكبير البطاقة، وزيادة الحشوة الداخلية sm:p-12 -->
+    <div class="w-full max-w-lg rounded-2xl border border-white/30 bg-white/50 p-6 shadow-2xl backdrop-blur-xl dark:border-slate-700/50 dark:bg-slate-900/60 sm:p-12">
 
-    <div class="mb-8 flex justify-center">
-    <LineSquiggle class="h-16 w-16 text-[#6669C6] drop-shadow-md" strokeWidth="2.5" />
-</div>
+        <!-- حاوية الشعار واسم المشروع -->
+        <div class="mb-10 flex flex-col items-center justify-center gap-3">
+            <LineSquiggle class="h-16 w-16 text-[#ffffff] drop-shadow-md" strokeWidth="2.5" />
+            <h1 class="text-4xl font-extrabold tracking-wide text-[#ffffff] drop-shadow-sm">مَسار</h1>
+        </div>
 
         <Form
             {...store.form()}
@@ -86,10 +91,10 @@
                         </Label>
                     </div>
 
+                    <!-- تم تكبير الزر قليلاً ليتناسب مع الحجم الجديد للبطاقة -->
                     <Button
                         type="submit"
-                        class="mt-4 h-10 w-full border-none bg-gradient-to-r from-[#2B3070] via-[#6b6ec6] to-[#8C8DD8] text-white transition-opacity hover:opacity-90"
-                        disabled={processing}
+                        class="mt-4 h-10 w-full border-none bg-gradient-to-r from-[#3c3f98] via-[#6b6ec6] to-[#8C8DD8] text-white transition-opacity hover:opacity-90"
                         data-test="login-button"
                     >
                         {#if processing}<Spinner />{/if}

@@ -44,10 +44,10 @@
         router.visit(logout(), { method: 'post' });
     }
     const navItems = [
-        { href: toUrl(transactions()), icon: ReceiptText, label: 'المعاملات' },
-        { href: toUrl(aiAssistant()), icon: Bot, label: 'المساعد' },
-        { href: toUrl(dashboard()), icon: Home, label: 'الرئيسية', isCenter: true },
-        { href: toUrl(budget()), icon: Target, label: 'الميزانية' },
+        { href: toUrl(transactions()), icon: ReceiptText, label: '' },
+        { href: toUrl(aiAssistant()), icon: Bot, label: '' },
+        { href: toUrl(dashboard()), icon: Home, label: '', isCenter: true },
+        { href: toUrl(budget()), icon: Target, label: '' },
     ];
 </script>
 
