@@ -1,0 +1,78 @@
+﻿data: {"type":"text","delta":"╪│"}
+
+data: {"type":"text","delta":"╪ث╪╢"}
+
+data: {"type":"text","delta":"┘è┘ ╪د┘┘à╪╡╪▒"}
+
+data: {"type":"text","delta":"┘ê┘ ╪د┘┘à"}
+
+data: {"type":"text","delta":"╪╖┘┘ê╪ذ ╪د┘╪ت"}
+
+data: {"type":"text","delta":"┘."}
+
+data: {"type":"tool_call","id":"chatcmpl-tool-bd73e9a994ee2ff7","name":"CreateTransactions","arguments":{"transactions":[{"type":"expense","amount":50,"date":"2026-09-14","category":"Food","notes":"╪د╪«╪ز╪ذ╪د╪▒ ╪د┘┘à╪│╪د╪╣╪»"}]}}
+
+data: {"type":"tool_result","id":"chatcmpl-tool-bd73e9a994ee2ff7","name":"CreateTransactions","ok":true,"summary":"╪ث╪╢┘è┘╪ز 1 ╪╣┘à┘┘è╪ر ╪ذ┘╪ش╪د╪ص","data":{"created_count":1,"created_ids":[25]}}
+
+data: {"type":"text","delta":"╪ز┘à"}
+
+data: {"type":"text","delta":"╪ز ╪د┘╪ح╪╢"}
+
+data: {"type":"text","delta":"╪د┘╪ر ╪ذ┘"}
+
+data: {"type":"text","delta":"╪ش╪د╪ص"}
+
+data: {"type":"text","delta":" ظ£à\n\n-"}
+
+data: {"type":"text","delta":" **"}
+
+data: {"type":"text","delta":"╪▒┘é┘à ╪د┘╪╣┘à┘"}
+
+data: {"type":"text","delta":"┘è╪ر:** "}
+
+data: {"type":"text","delta":"25\n-"}
+
+data: {"type":"text","delta":" **╪د┘┘à"}
+
+data: {"type":"text","delta":"╪ذ┘╪║:** "}
+
+data: {"type":"text","delta":"50 ╪▒."}
+
+data: {"type":"text","delta":"╪│\n"}
+
+data: {"type":"text","delta":"- **╪د┘╪ز"}
+
+data: {"type":"text","delta":"╪د╪▒┘è╪«:** "}
+
+data: {"type":"text","delta":"2026-"}
+
+data: {"type":"text","delta":"09-14"}
+
+data: {"type":"text","delta":" (╪د┘┘è"}
+
+data: {"type":"text","delta":"┘ê┘à)\n"}
+
+data: {"type":"text","delta":"- **╪د┘╪ز"}
+
+data: {"type":"text","delta":"╪╡┘┘è┘"}
+
+data: {"type":"text","delta":":** Food"}
+
+data: {"type":"text","delta":" (╪╖"}
+
+data: {"type":"text","delta":"╪╣╪د┘à"}
+
+data: {"type":"text","delta":")\n- **"}
+
+data: {"type":"text","delta":"╪د┘┘à┘╪د╪ص"}
+
+data: {"type":"text","delta":"╪╕╪ر"}
+
+data: {"type":"text","delta":":** ╪د╪«"}
+
+data: {"type":"text","delta":"╪ز╪ذ╪د╪▒ ╪د┘┘à╪│"}
+
+data: {"type":"text","delta":"╪د╪╣╪»"}
+
+data: {"type":"done"}
+

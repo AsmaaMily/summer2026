@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts">
+    import { router } from '@inertiajs/svelte';
     import {
         Plus,
         Search,
@@ -15,7 +16,11 @@
         Banknote,
     } from 'lucide-svelte';
     import AppHead from '@/components/AppHead.svelte';
+    import ConfirmDialog from '@/components/ConfirmDialog.svelte';
+    import Pagination from '@/components/Pagination.svelte';
+    import TransactionFormModal from '@/components/TransactionFormModal.svelte';
     import { Button } from '@/components/ui/button';
+    import { Checkbox } from '@/components/ui/checkbox';
     import { Input } from '@/components/ui/input';
     import {
         Select,
@@ -23,11 +28,6 @@
         SelectItem,
         SelectTrigger,
     } from '@/components/ui/select';
-    import { Checkbox } from '@/components/ui/checkbox';
-    import TransactionFormModal from '@/components/TransactionFormModal.svelte';
-    import ConfirmDialog from '@/components/ConfirmDialog.svelte';
-    import Pagination from '@/components/Pagination.svelte';
-    import { router } from '@inertiajs/svelte';
     import { formatAmount, formatDate } from '@/lib/utils';
     import type { TransactionsProps, Transaction } from '@/types';
 
@@ -64,12 +64,29 @@
         const dateTo = overrides.date_to ?? filters.date_to;
         const page = overrides.page ?? '1';
 
-        if (search) params.search = search;
-        if (type && type !== 'all') params.type = type;
-        if (categoryId && categoryId !== 'all') params.category_id = categoryId;
-        if (dateFrom) params.date_from = dateFrom;
-        if (dateTo) params.date_to = dateTo;
-        if (page !== '1') params.page = page;
+        if (search) {
+params.search = search;
+}
+
+        if (type && type !== 'all') {
+params.type = type;
+}
+
+        if (categoryId && categoryId !== 'all') {
+params.category_id = categoryId;
+}
+
+        if (dateFrom) {
+params.date_from = dateFrom;
+}
+
+        if (dateTo) {
+params.date_to = dateTo;
+}
+
+        if (page !== '1') {
+params.page = page;
+}
 
         router.visit('/transactions', {
             data: params,
@@ -127,11 +144,13 @@
 
     function toggleSelect(id: number, checked: boolean) {
         const next = new Set(selectedIds);
+
         if (checked) {
             next.add(id);
         } else {
             next.delete(id);
         }
+
         selectedIds = next;
     }
 

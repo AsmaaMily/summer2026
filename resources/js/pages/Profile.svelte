@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts">
+    import { useForm, router } from '@inertiajs/svelte';
     import {
         Plus,
         Edit,
@@ -15,6 +16,8 @@
         Power,
     } from 'lucide-svelte';
     import AppHead from '@/components/AppHead.svelte';
+    import CategoryFormModal from '@/components/CategoryFormModal.svelte';
+    import RecurringTransactionFormModal from '@/components/RecurringTransactionFormModal.svelte';
     import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
@@ -24,9 +27,6 @@
         TabsList,
         TabsTrigger,
     } from '@/components/ui/tabs';
-    import CategoryFormModal from '@/components/CategoryFormModal.svelte';
-    import RecurringTransactionFormModal from '@/components/RecurringTransactionFormModal.svelte';
-    import { useForm, router } from '@inertiajs/svelte';
     import { formatAmount, formatDate } from '@/lib/utils';
     import type { Category, RecurringFrequency, RecurringTransaction } from '@/types';
 

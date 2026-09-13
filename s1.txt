@@ -1,0 +1,100 @@
+﻿data: {"type":"tool_call","id":"chatcmpl-tool-bd710ef0fabd28fc","name":"ListTransactions","arguments":{"type":"expense","date_from":"2026-09-01","date_to":"2026-09-14"}}
+
+data: {"type":"tool_result","id":"chatcmpl-tool-bd710ef0fabd28fc","name":"ListTransactions","ok":true,"summary":"╪╣╪»╪» ╪د┘┘╪ز╪د╪خ╪ش ╪د┘┘à╪╖╪د╪ذ┘é╪ر: 2 ظ¤ ┘à╪ش┘à┘ê╪╣ ╪د┘┘à╪╡╪▒┘ê┘╪د╪ز: 100.00 ╪▒.╪│","data":{"transactions":[{"id":24,"date":"2026-09-13","type":"expense","category":"Food","amount":50,"notes":"coffee"},{"id":23,"date":"2026-09-13","type":"expense","category":"Food","amount":50,"notes":"Coffee"}],"total_count":2,"returned_count":2,"sum_amount":100,"truncated":false}}
+
+data: {"type":"text","delta":"╪╡╪▒┘╪ز"}
+
+data: {"type":"text","delta":" **"}
+
+data: {"type":"text","delta":"100 ╪▒"}
+
+data: {"type":"text","delta":".╪│"}
+
+data: {"type":"text","delta":"** ┘ç╪░╪د"}
+
+data: {"type":"text","delta":" ╪د┘╪┤┘ç╪▒ ("}
+
+data: {"type":"text","delta":"╪│╪ذ╪ز┘à"}
+
+data: {"type":"text","delta":"╪ذ╪▒ 202"}
+
+data: {"type":"text","delta":"6)"}
+
+data: {"type":"text","delta":"╪î"}
+
+data: {"type":"text","delta":" ┘à┘ê"}
+
+data: {"type":"text","delta":"╪▓"}
+
+data: {"type":"text","delta":"┘ّ"}
+
+data: {"type":"text","delta":"╪╣╪ر ╪╣┘┘ë ╪╣"}
+
+data: {"type":"text","delta":"┘à┘┘è"}
+
+data: {"type":"text","delta":"╪ز┘è┘"}
+
+data: {"type":"text","delta":":"}
+
+data: {"type":"text","delta":"\n\n- "}
+
+data: {"type":"text","delta":"50"}
+
+data: {"type":"text","delta":" ╪▒.╪│"}
+
+data: {"type":"text","delta":" ظ¤"}
+
+data: {"type":"text","delta":" ╪╖"}
+
+data: {"type":"text","delta":"╪╣"}
+
+data: {"type":"text","delta":"╪د┘à (Coffee"}
+
+data: {"type":"text","delta":") ظ¤ "}
+
+data: {"type":"text","delta":"2026-"}
+
+data: {"type":"text","delta":"09-13"}
+
+data: {"type":"text","delta":"\n- "}
+
+data: {"type":"text","delta":"50 ╪▒."}
+
+data: {"type":"text","delta":"╪│ ظ¤"}
+
+data: {"type":"text","delta":" ╪╖╪╣"}
+
+data: {"type":"text","delta":"╪د┘à (co"}
+
+data: {"type":"text","delta":"ffee) ظ¤"}
+
+data: {"type":"text","delta":" 2026"}
+
+data: {"type":"text","delta":"-09-"}
+
+data: {"type":"text","delta":"13\n\n┘ç┘"}
+
+data: {"type":"text","delta":" ╪ز╪▒┘è"}
+
+data: {"type":"text","delta":"╪» ╪ز"}
+
+data: {"type":"text","delta":"┘╪د╪╡"}
+
+data: {"type":"text","delta":"┘è┘ ╪ث┘â╪س╪▒"}
+
+data: {"type":"text","delta":" ╪ث┘ê"}
+
+data: {"type":"text","delta":" ╪ز╪╡"}
+
+data: {"type":"text","delta":"┘"}
+
+data: {"type":"text","delta":"┘è┘┘ï╪د"}
+
+data: {"type":"text","delta":" ┘à╪╣┘è┘"}
+
+data: {"type":"text","delta":"┘ï╪د"}
+
+data: {"type":"text","delta":"╪ا"}
+
+data: {"type":"done"}
+

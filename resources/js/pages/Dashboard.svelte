@@ -4,6 +4,7 @@
 </script>
 
 <script lang="ts">
+    import { router } from '@inertiajs/svelte';
     import {
         Plus,
         Wallet,
@@ -15,6 +16,7 @@
         Banknote,
     } from 'lucide-svelte';
     import AppHead from '@/components/AppHead.svelte';
+    import TransactionFormModal from '@/components/TransactionFormModal.svelte';
     import { Button } from '@/components/ui/button';
     import {
         Select,
@@ -22,8 +24,6 @@
         SelectItem,
         SelectTrigger,
     } from '@/components/ui/select';
-    import TransactionFormModal from '@/components/TransactionFormModal.svelte';
-    import { router } from '@inertiajs/svelte';
     import { formatAmount, formatDate } from '@/lib/utils';
     import type { DashboardProps, Category } from '@/types';
 

@@ -28,6 +28,7 @@
         SheetTitle,
         SheetTrigger,
     } from '@/components/ui/sheet';
+    import { currentUrlState } from '@/lib/currentUrl.svelte';
     import { getInitials } from '@/lib/initials';
     import { toUrl } from '@/lib/utils';
     import {
@@ -38,7 +39,6 @@
         profile,
         logout,
     } from '@/routes';
-    import { currentUrlState } from '@/lib/currentUrl.svelte';
     import type { NavItem } from '@/types';
 
     const auth = $derived(page.props.auth);

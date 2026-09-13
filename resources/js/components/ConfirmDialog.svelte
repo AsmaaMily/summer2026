@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { Button } from '@/components/ui/button';
     import {
         Dialog,
         DialogContent,
@@ -7,7 +8,6 @@
         DialogDescription,
         DialogFooter,
     } from '@/components/ui/dialog';
-    import { Button } from '@/components/ui/button';
 
     let {
         open = $bindable(false),

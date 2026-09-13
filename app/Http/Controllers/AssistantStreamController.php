@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Ai\Agents\FinanceAssistant;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Messages\Message;
-use Laravel\Ai\Streaming\Events\Error as StreamErrorEvent;
+use Laravel\Ai\Streaming\Events\Error;
+use Laravel\Ai\Streaming\Events\StreamEvent;
 use Laravel\Ai\Streaming\Events\TextDelta;
 use Laravel\Ai\Streaming\Events\ToolCall;
 use Laravel\Ai\Streaming\Events\ToolResult;
@@ -15,131 +16,132 @@ use Throwable;
 
 class AssistantStreamController extends Controller
 {
-    /**
-     * The maximum time, in seconds, the stream may run across all layers.
-     */
-    protected const STREAM_TIMEOUT = 300;
-
-    /**
-     * Seconds of silence after which a keep-alive ping is emitted.
-     */
-    protected const HEARTBEAT_SECONDS = 15;
-
-    /**
-     * Stream the finance assistant's response to the client over SSE.
-     */
     public function __invoke(Request $request): StreamedResponse
     {
-        set_time_limit(self::STREAM_TIMEOUT);
-        ini_set('max_execution_time', (string) self::STREAM_TIMEOUT);
-        ignore_user_abort(false);
-
         $validated = $request->validate([
             'message' => ['required', 'string', 'max:4000'],
-            'history' => ['nullable', 'array', 'max:100'],
+            'history' => ['nullable', 'array', 'max:20'],
             'history.*.role' => ['required', 'string', 'in:user,assistant'],
             'history.*.content' => ['required', 'string', 'max:4000'],
         ]);
 
-        /** @var User $user */
-        $user = $request->user();
+        $history = $this->sanitizeHistory($validated['history'] ?? []);
 
-        $history = collect($validated['history'] ?? [])
-            ->slice(-20)
-            ->map(fn (array $message): Message => new Message($message['role'], $message['content']))
-            ->values()
-            ->all();
+        $agent = new FinanceAssistant($request->user(), $history);
 
-        $agent = new FinanceAssistant(user: $user, history: $history);
-
-        return response()->eventStream(
-            function () use ($agent, $validated): \Generator {
-                $lastEmit = microtime(true);
-
-                try {
-                    $stream = $agent->stream(
-                        $validated['message'],
-                        model: (string) config('ai.providers.opencode.models.text.default'),
-                        timeout: self::STREAM_TIMEOUT,
-                    );
-
-                    foreach ($stream as $event) {
-                        $frame = match (true) {
-                            $event instanceof TextDelta => ['type' => 'text', 'delta' => $event->delta],
-                            $event instanceof ToolCall => [
-                                'type' => 'tool_call',
-                                'id' => $event->toolCall->id,
-                                'name' => $event->toolCall->name,
-                                'arguments' => $event->toolCall->arguments,
-                            ],
-                            $event instanceof ToolResult => $this->toolResultFrame($event),
-                            $event instanceof StreamErrorEvent => $this->errorFrame($event),
-                            default => null,
-                        };
-
-                        if ($frame === null) {
-                            continue;
-                        }
-
-                        if (microtime(true) - $lastEmit >= self::HEARTBEAT_SECONDS) {
-                            yield ['type' => 'ping'];
-                        }
-
-                        $lastEmit = microtime(true);
-                        yield $frame;
-                    }
-
-                    yield ['type' => 'done'];
-                } catch (Throwable $exception) {
-                    report($exception);
-
-                    yield ['type' => 'error', 'message' => 'حدث خطأ غير متوقع أثناء توليد الرد. حاول مرة أخرى.'];
-                    yield ['type' => 'done'];
-                }
-            },
-            [],
-            null,
+        return response()->stream(
+            fn () => $this->writeStream($agent, $validated['message']),
+            200,
+            [
+                'Content-Type' => 'text/event-stream; charset=UTF-8',
+                'Cache-Control' => 'no-cache',
+                'X-Accel-Buffering' => 'no',
+            ],
         );
     }
 
     /**
-     * Map a tool result event to its SSE frame, extracting the unified summary.
+     * Only keep well-formed user/assistant messages, capped at the configured
+     * history limit. Anything else sent by the client is discarded.
      *
-     * @return array<string, mixed>
+     * @param  array<int, mixed>  $history
+     * @return Message[]
      */
-    protected function toolResultFrame(ToolResult $event): array
+    protected function sanitizeHistory(array $history): array
     {
-        $result = $event->toolResult->result;
-        $summary = null;
-        $ok = $event->successful;
+        $limit = max(1, (int) config('ai.assistant.max_history_messages', 20));
 
-        if (is_string($result)) {
-            $decoded = json_decode($result, true);
+        return collect($history)
+            ->filter(fn ($message) => is_array($message)
+                && in_array($message['role'] ?? null, ['user', 'assistant'], true)
+                && is_string($message['content'] ?? null)
+                && trim($message['content']) !== '')
+            ->slice(-$limit)
+            ->map(fn (array $message) => new Message($message['role'], $message['content']))
+            ->values()
+            ->all();
+    }
 
-            if (is_array($decoded) && isset($decoded['summary']) && is_string($decoded['summary'])) {
-                $summary = $decoded['summary'];
-                $ok = $ok && (bool) ($decoded['ok'] ?? true);
+    protected function writeStream(FinanceAssistant $agent, string $message): void
+    {
+        try {
+            foreach ($agent->stream($message) as $event) {
+                if (connection_aborted() !== 0) {
+                    break;
+                }
+
+                $frame = $this->toFrame($event);
+
+                if ($frame !== null) {
+                    $this->send($frame);
+                }
             }
+        } catch (Throwable $e) {
+            report($e);
+
+            $this->send(['type' => 'error', 'message' => 'حدث خطأ أثناء توليد الرد. حاول مرة أخرى.']);
         }
 
-        return [
-            'type' => 'tool_result',
-            'id' => $event->toolResult->id,
-            'name' => $event->toolResult->name,
-            'summary' => $summary ?? ($event->error ?? ($ok ? 'تم تنفيذ الأداة' : 'فشل تنفيذ الأداة')),
-            'ok' => $ok,
-        ];
+        $this->send(['type' => 'done']);
     }
 
     /**
-     * Map a stream error event to a generic SSE frame without leaking details.
+     * Map a package stream event to the assistant frame protocol.
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed>|null
      */
-    protected function errorFrame(StreamErrorEvent $event): array
+    protected function toFrame(StreamEvent $event): ?array
     {
-        report(new \RuntimeException('AI stream error: '.$event->message));
+        if ($event instanceof TextDelta) {
+            return ['type' => 'text', 'delta' => $event->delta];
+        }
 
-        return ['type' => 'error', 'message' => 'حدث خطأ أثناء الاتصال بالمساعد. حاول مرة أخرى.'];
+        if ($event instanceof ToolCall) {
+            return [
+                'type' => 'tool_call',
+                'id' => $event->toolCall->id,
+                'name' => $event->toolCall->name,
+                'arguments' => $event->toolCall->arguments,
+            ];
+        }
+
+        if ($event instanceof ToolResult) {
+            $result = json_decode((string) $event->toolResult->result, true);
+
+            $frame = [
+                'type' => 'tool_result',
+                'id' => $event->toolResult->id,
+                'name' => $event->toolResult->name,
+                'ok' => $event->successful && ! $event->denied && ($result['ok'] ?? true),
+                'summary' => is_array($result) && array_key_exists('summary', $result)
+                    ? (string) $result['summary']
+                    : 'تم التنفيذ',
+                'data' => is_array($result) ? ($result['data'] ?? null) : null,
+            ];
+
+            return $frame;
+        }
+
+        if ($event instanceof Error) {
+            Log::warning('Assistant stream error event', ['message' => $event->message, 'type' => $event->type]);
+
+            return ['type' => 'error', 'message' => 'حدث خطأ أثناء توليد الرد. حاول مرة أخرى.'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $frame
+     */
+    protected function send(array $frame): void
+    {
+        echo 'data: '.json_encode($frame, JSON_UNESCAPED_UNICODE)."\n\n";
+
+        if (ob_get_level() > 0) {
+            @ob_flush();
+        }
+
+        @flush();
     }
 }

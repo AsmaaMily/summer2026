@@ -2,109 +2,123 @@
 
 namespace App\Ai\Tools;
 
+use App\Http\Requests\StoreTransactionRequest;
 use App\Models\Category;
-use App\Models\Transaction;
 use App\Models\User;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Ai\Contracts\Tool;
 
-/**
- * Base class for the finance assistant tools.
- *
- * Every tool is hard-scoped to the user received via the constructor. Tools
- * must never query transactions outside the user's own relation, and IDs of
- * other users are silently ignored and reported as "not_found".
- */
 abstract class FinanceTool implements Tool
 {
     public function __construct(protected User $user) {}
 
     /**
-     * Build the unified JSON result every tool returns to the model.
+     * Build the unified JSON payload returned by every finance tool.
      *
      * @param  array<string, mixed>  $data
      */
     protected function result(bool $ok, string $summary, array $data = []): string
     {
-        return (string) json_encode([
-            'ok' => $ok,
-            'summary' => $summary,
-            'data' => $data,
-        ]);
+        return (string) json_encode(['ok' => $ok, 'summary' => $summary, ...$data], JSON_UNESCAPED_UNICODE);
     }
 
     /**
-     * Build the unified JSON error result for invalid or unresolvable input.
-     */
-    protected function failure(string $message): string
-    {
-        return $this->result(false, $message);
-    }
-
-    /**
-     * The categories the user may assign: their own plus system defaults.
+     * The transaction validation rules shared with the HTTP form requests.
      *
-     * @return Collection<int, Category>
+     * @return array<string, mixed>
      */
-    protected function availableCategories(): Collection
+    protected function transactionRules(): array
     {
-        return Category::query()
-            ->where(function ($query): void {
-                $query->where('user_id', $this->user->id)->orWhereNull('user_id');
-            })
-            ->where('is_archived', false)
-            ->orderBy('sort_order')
-            ->get();
+        return (new StoreTransactionRequest)->rules();
     }
 
     /**
-     * Resolve a category given as an id, English name, or Arabic name.
+     * Validate a single transaction payload using the shared form request rules.
+     *
+     * @param  array<int, string>|null  $only
+     * @return array{0: bool, 1: array<int, string>, 2: array<string, mixed>}
      */
-    protected function resolveCategory(string $value, Collection $categories): ?Category
+    protected function validateTransaction(array $item, ?array $only = null): array
     {
-        if (ctype_digit($value)) {
-            return $categories->first(fn (Category $category): bool => $category->id === (int) $value);
+        $rules = $this->transactionRules();
+
+        if ($only !== null) {
+            $rules = array_intersect_key($rules, array_flip($only));
         }
 
-        $normalized = Str::lower(trim($value));
+        $validator = Validator::make($item, $rules);
 
-        return $categories->first(fn (Category $category): bool => Str::lower($category->name) === $normalized
-            || Str::lower($category->name_ar) === $normalized);
+        if ($validator->fails()) {
+            return [false, $validator->errors()->all(), []];
+        }
+
+        return [true, [], $validator->validated()];
     }
 
     /**
-     * A human-readable list of the available categories for error messages.
-     */
-    protected function categoryOptions(Collection $categories): string
-    {
-        return $categories
-            ->map(fn (Category $category): string => sprintf('%d (%s / %s, %s)', $category->id, $category->name, $category->name_ar, $category->type->value))
-            ->implode(', ');
-    }
-
-    /**
-     * Compact, token-efficient representation of transactions for tool results.
+     * Resolve the "category" / "category_id" arguments of a transaction payload
+     * into a category ID owned by, or global to, the current user.
      *
-     * @param  Collection<int, Transaction>  $transactions
-     * @return array<int, array<string, mixed>>
+     * @param  array<string, mixed>  $item
+     * @return array{0: int|null, 1: string|null}
      */
-    protected function transactionRows(Collection $transactions): array
+    protected function normalizeCategory(array $item): array
     {
-        return $transactions
-            ->map(fn (Transaction $transaction): array => [
-                'id' => $transaction->id,
-                'date' => $transaction->date instanceof \DateTimeInterface
-                    ? $transaction->date->format('Y-m-d')
-                    : (string) $transaction->date,
-                'type' => $transaction->type->value,
-                'category' => $transaction->category?->name,
-                'category_ar' => $transaction->category?->name_ar,
-                'amount' => $transaction->amount,
-                'notes' => $transaction->notes,
-                'payment_method' => $transaction->payment_method->value,
-            ])
-            ->values()
-            ->all();
+        $name = $item['category'] ?? null;
+        $id = $item['category_id'] ?? null;
+
+        if ($name !== null && ! is_string($name)) {
+            return [null, 'قيمة category يجب أن تكون اسم تصنيف نصي'];
+        }
+
+        if ($id !== null && ! is_numeric($id)) {
+            return [null, 'قيمة category_id يجب أن تكون رقماً'];
+        }
+
+        $resolved = $this->resolveCategoryId(
+            $id !== null ? (int) $id : null,
+            is_string($name) && $name !== '' ? $name : null,
+        );
+
+        if ($resolved === null) {
+            return [null, 'تصنيف غير معروف. استخدم اسم تصنيف من القائمة المتاحة فقط'];
+        }
+
+        return [$resolved, null];
+    }
+
+    /**
+     * Find a global or user-owned category by ID or exact (case-insensitive) name.
+     */
+    protected function resolveCategoryId(?int $id = null, ?string $name = null): ?int
+    {
+        $query = Category::query()->where(function ($query) {
+            $query->whereNull('user_id')->orWhere('user_id', $this->user->id);
+        });
+
+        if ($id !== null) {
+            return $query->where('id', $id)->value('id');
+        }
+
+        if ($name !== null) {
+            $category = $query->where('name', $name)->first()
+                ?? $query->whereRaw('lower(name) = ?', [mb_strtolower($name)])->first();
+
+            return $category?->id;
+        }
+
+        return null;
+    }
+
+    /**
+     * Strip the convenience keys from a payload after category normalization.
+     *
+     * @param  array<string, mixed>  $item
+     * @return array<string, mixed>
+     */
+    protected function withoutCategoryKeys(array $item): array
+    {
+        return Arr::except($item, ['category', 'category_id']);
     }
 }

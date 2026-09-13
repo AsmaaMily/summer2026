@@ -1,4 +1,7 @@
 <script lang="ts">
+    import { useForm } from '@inertiajs/svelte';
+    import InputError from '@/components/InputError.svelte';
+    import { Button } from '@/components/ui/button';
     import {
         Dialog,
         DialogContent,
@@ -6,18 +9,15 @@
         DialogTitle,
         DialogFooter,
     } from '@/components/ui/dialog';
-    import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
-    import { Textarea } from '@/components/ui/textarea';
     import {
         Select,
         SelectContent,
         SelectItem,
         SelectTrigger,
     } from '@/components/ui/select';
-    import InputError from '@/components/InputError.svelte';
-    import { useForm } from '@inertiajs/svelte';
+    import { Textarea } from '@/components/ui/textarea';
     import type { Category, Transaction } from '@/types';
 
     let {
@@ -56,8 +56,10 @@
                 form.date = new Date().toISOString().split('T')[0];
                 form.notes = '';
             }
+
             form.clearErrors();
         }
+
         lastOpen = open;
     });
 
@@ -95,7 +97,9 @@
             </DialogTitle>
         </DialogHeader>
 
-        <form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="flex flex-col gap-4">
+        <form onsubmit={(e) => {
+ e.preventDefault(); handleSubmit(); 
+}} class="flex flex-col gap-4">
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-2">
                     <Label for="amount" class="text-slate-700 dark:text-slate-300">المبلغ</Label>

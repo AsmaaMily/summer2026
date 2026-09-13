@@ -4,92 +4,73 @@ namespace App\Ai\Tools;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Laravel\Ai\Tools\Request;
 use Stringable;
 
 class DeleteTransactions extends FinanceTool
 {
-    /**
-     * Get the description of the tool's purpose.
-     */
+    public const MAX_ITEMS = 50;
+
     public function description(): Stringable|string
     {
-        return 'Permanently delete one or more of the current user\'s transactions by explicit ids (bulk, up to 50 per call). '
-            .'Deletion is irreversible. Ids that do not exist or belong to someone else are ignored and listed as not_found. '
-            .'When the user describes records vaguely (e.g. "delete the coffee ones this week"), call ListTransactions first, '
-            .'show or reason about the exact records, then delete the confirmed ids. There is no way to delete all transactions '
-            .'in one call — explicit ids are always required.';
+        return <<<'TXT'
+        Use this tool to DELETE one or more of the current user's existing transactions by their numeric IDs. There is no "delete all" capability — explicit IDs are always required. Whenever the user describes the targets vaguely (e.g. "delete all my coffee expenses this week"), first call ListTransactions to resolve the exact IDs, then pass those IDs here. IDs that do not belong to the current user or no longer exist are ignored and reported in "not_found" rather than failing the whole call. Deletion is soft, so records can be restored later. All deletions are applied atomically.
+        TXT;
     }
 
-    /**
-     * Execute the tool.
-     */
     public function handle(Request $request): Stringable|string
     {
-        $validated = $request->validate(
-            [
-                'ids' => ['required', 'array', 'min:1', 'max:50'],
-                'ids.*' => ['required', 'integer'],
-            ],
-            [
-                'ids.max' => 'A single call may delete at most 50 transactions. Split larger requests into multiple calls.',
-                'ids.min' => 'At least one transaction id is required. There is no delete-all operation.',
-            ],
-        );
+        $validator = Validator::make($request->toArray(), [
+            'ids' => ['required', 'array', 'min:1', 'max:'.self::MAX_ITEMS],
+            'ids.*' => ['required', 'integer'],
+        ]);
 
-        $requestedIds = collect($validated['ids'])
-            ->filter(fn ($id): bool => $id !== null)
-            ->map(fn ($id): int => (int) $id)
-            ->unique()
-            ->values();
-
-        if ($requestedIds->isEmpty()) {
-            return $this->failure('At least one valid transaction id is required.');
+        if ($validator->fails()) {
+            return $this->result(false, 'مدخلات غير صالحة: '.implode('؛ ', $validator->errors()->all()));
         }
 
-        // Ownership is enforced inside the query itself; other users' ids are never visible.
-        $existing = $this->user->transactions()
-            ->with('category')
-            ->whereIn('id', $requestedIds->all())
-            ->get();
+        $ids = array_values(array_unique(array_map('intval', $validator->validated()['ids'])));
 
-        $notFound = $requestedIds->diff($existing->modelKeys())->values()->all();
+        $ownedIds = $this->user->transactions()
+            ->whereKey($ids)
+            ->pluck('id')
+            ->all();
 
-        $deletedRows = $this->transactionRows($existing);
-        $deletedIds = $existing->modelKeys();
-        $deletedTotal = (int) $existing->sum('amount');
+        if ($ownedIds === []) {
+            return $this->result(false, 'لم يتم العثور على أي من العمليات المطلوبة', [
+                'data' => ['not_found' => $ids],
+            ]);
+        }
 
-        DB::transaction(function () use ($deletedIds): void {
-            $this->user->transactions()->whereIn('id', $deletedIds)->delete();
-        });
+        DB::transaction(fn () => $this->user->transactions()->whereIn('id', $ownedIds)->delete());
 
-        $summary = sprintf(
-            'Deleted %d transaction(s) (ids: %s, total %d SAR).%s',
-            count($deletedIds),
-            implode(', ', $deletedIds),
-            $deletedTotal,
-            $notFound === [] ? '' : sprintf(' Ignored %d id(s) not found for this user: %s.', count($notFound), implode(', ', $notFound)),
-        );
+        $notFound = array_values(array_diff($ids, $ownedIds));
+
+        $summary = sprintf('حُذفت %d عملية', count($ownedIds));
+
+        if ($notFound !== []) {
+            $summary .= sprintf(' — وتجاهل %d غير موجودة', count($notFound));
+        }
 
         return $this->result(true, $summary, [
-            'deleted_count' => count($deletedIds),
-            'deleted_ids' => $deletedIds,
-            'deleted_total' => $deletedTotal,
-            'deleted' => $deletedRows,
-            'not_found' => $notFound,
+            'data' => [
+                'deleted_count' => count($ownedIds),
+                'deleted_ids' => array_map('intval', $ownedIds),
+                'not_found' => $notFound,
+            ],
         ]);
     }
 
-    /**
-     * Get the tool's schema definition.
-     */
     public function schema(JsonSchema $schema): array
     {
         return [
-            'ids' => $schema->array()->min(1)->max(50)
+            'ids' => $schema->array()
+                ->min(1)
+                ->max(self::MAX_ITEMS)
                 ->items($schema->integer())
                 ->required()
-                ->description('The ids of the transactions to delete (1 to 50 per call). Determine ids via ListTransactions when the user describes records vaguely.'),
+                ->description('أرقام العمليات المطلوب حذفها — استخدم ListTransactions أولاً لتحديدها'),
         ];
     }
 }

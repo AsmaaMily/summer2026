@@ -1,5 +1,6 @@
 <script lang="ts">
     import { useForm } from '@inertiajs/svelte';
+    import { Button } from '@/components/ui/button';
     import {
         Dialog,
         DialogContent,
@@ -7,7 +8,6 @@
         DialogTitle,
         DialogFooter,
     } from '@/components/ui/dialog';
-    import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
     import type { Category } from '@/types';
@@ -49,6 +49,7 @@
                 form.type = type;
             }
         }
+
         lastOpen = open;
     });
 

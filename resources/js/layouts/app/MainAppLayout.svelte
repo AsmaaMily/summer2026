@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import MobileBottomNav from '@/components/MobileBottomNav.svelte';
     import DesktopTopNav from '@/components/DesktopTopNav.svelte';
+    import MobileBottomNav from '@/components/MobileBottomNav.svelte';
     import { Toaster } from '@/components/ui/sonner';
 
     let {

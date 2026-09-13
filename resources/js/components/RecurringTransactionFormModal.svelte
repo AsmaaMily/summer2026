@@ -1,5 +1,6 @@
 <script lang="ts">
     import { useForm } from '@inertiajs/svelte';
+    import { Button } from '@/components/ui/button';
     import {
         Dialog,
         DialogContent,
@@ -7,16 +8,15 @@
         DialogTitle,
         DialogFooter,
     } from '@/components/ui/dialog';
-    import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
-    import { Textarea } from '@/components/ui/textarea';
     import {
         Select,
         SelectContent,
         SelectItem,
         SelectTrigger,
     } from '@/components/ui/select';
+    import { Textarea } from '@/components/ui/textarea';
     import type {
         Category,
         RecurringFrequency,
@@ -95,8 +95,10 @@
                 form.notes = '';
                 form.is_active = true;
             }
+
             form.clearErrors();
         }
+
         lastOpen = open;
     });
 

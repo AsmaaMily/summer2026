@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Button } from '@/components/ui/button';
     import { ChevronRight, ChevronLeft } from 'lucide-svelte';
+    import { Button } from '@/components/ui/button';
 
     let {
         currentPage,
@@ -14,17 +14,32 @@
 
     const pages = $derived(() => {
         const items: (number | '...')[] = [];
+
         if (lastPage <= 7) {
-            for (let i = 1; i <= lastPage; i++) items.push(i);
+            for (let i = 1; i <= lastPage; i++) {
+items.push(i);
+}
         } else {
             items.push(1);
-            if (currentPage > 3) items.push('...');
+
+            if (currentPage > 3) {
+items.push('...');
+}
+
             const start = Math.max(2, currentPage - 1);
             const end = Math.min(lastPage - 1, currentPage + 1);
-            for (let i = start; i <= end; i++) items.push(i);
-            if (currentPage < lastPage - 2) items.push('...');
+
+            for (let i = start; i <= end; i++) {
+items.push(i);
+}
+
+            if (currentPage < lastPage - 2) {
+items.push('...');
+}
+
             items.push(lastPage);
         }
+
         return items;
     });
 </script>

@@ -41,6 +41,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Finance Assistant
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for the finance assistant agent, including the timezone
+    | used to resolve relative dates such as "today" or "this month" for
+    | the current user.
+    |
+    */
+
+    'assistant' => [
+        'timezone' => env('ASSISTANT_TIMEZONE', 'Asia/Riyadh'),
+        'max_history_messages' => env('ASSISTANT_MAX_HISTORY', 20),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | AI Providers
     |--------------------------------------------------------------------------
     |

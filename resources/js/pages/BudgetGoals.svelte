@@ -15,11 +15,11 @@
         TrendingUp,
     } from 'lucide-svelte';
     import AppHead from '@/components/AppHead.svelte';
-    import { Button } from '@/components/ui/button';
-    import { Badge } from '@/components/ui/badge';
     import BudgetFormModal from '@/components/BudgetFormModal.svelte';
-    import GoalFormModal from '@/components/GoalFormModal.svelte';
     import ContributeModal from '@/components/ContributeModal.svelte';
+    import GoalFormModal from '@/components/GoalFormModal.svelte';
+    import { Badge } from '@/components/ui/badge';
+    import { Button } from '@/components/ui/button';
     import type { Budget, FinancialGoal, Category } from '@/types';
 
     let {
@@ -93,8 +93,14 @@
     }
 
     function getProgressColor(ratio: number): string {
-        if (ratio > 0.8) return 'from-rose-400 to-red-400';
-        if (ratio > 0.6) return 'from-amber-200 to-orange-300';
+        if (ratio > 0.8) {
+return 'from-rose-400 to-red-400';
+}
+
+        if (ratio > 0.6) {
+return 'from-amber-200 to-orange-300';
+}
+
         return 'from-emerald-300 to-green-300';
     }
 

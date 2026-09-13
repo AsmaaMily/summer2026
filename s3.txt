@@ -1,0 +1,52 @@
+﻿data: {"type":"tool_call","id":"chatcmpl-tool-945cf43b02e3048c","name":"ListTransactions","arguments":{"category":"Food","date_from":"2026-08-01","date_to":"2026-08-31","type":"expense"}}
+
+data: {"type":"tool_result","id":"chatcmpl-tool-945cf43b02e3048c","name":"ListTransactions","ok":true,"summary":"╪╣╪»╪» ╪د┘┘╪ز╪د╪خ╪ش ╪د┘┘à╪╖╪د╪ذ┘é╪ر: 0 ظ¤ ┘à╪ش┘à┘ê╪╣ ╪د┘┘à╪╡╪▒┘ê┘╪د╪ز: 0.00 ╪▒.╪│","data":{"transactions":[],"total_count":0,"returned_count":0,"sum_amount":0,"truncated":false}}
+
+data: {"type":"text","delta":"╪╡"}
+
+data: {"type":"text","delta":"╪▒┘╪ز"}
+
+data: {"type":"text","delta":" **"}
+
+data: {"type":"text","delta":"0 ╪▒"}
+
+data: {"type":"text","delta":".╪│**"}
+
+data: {"type":"text","delta":" ╪╣┘┘ë ╪د┘╪╖"}
+
+data: {"type":"text","delta":"╪╣╪د┘à ╪«┘╪د┘"}
+
+data: {"type":"text","delta":" ╪┤"}
+
+data: {"type":"text","delta":"┘ç╪▒ ╪ث"}
+
+data: {"type":"text","delta":"╪║╪│╪╖"}
+
+data: {"type":"text","delta":"╪│ ╪د┘┘à"}
+
+data: {"type":"text","delta":"╪د╪╢┘è ("}
+
+data: {"type":"text","delta":"2026-"}
+
+data: {"type":"text","delta":"08) ظ¤"}
+
+data: {"type":"text","delta":" ┘╪د ╪ز┘ê╪ش"}
+
+data: {"type":"text","delta":"╪» ╪ث┘è"}
+
+data: {"type":"text","delta":" ╪╣┘à┘┘è"}
+
+data: {"type":"text","delta":"╪د╪ز ╪╖"}
+
+data: {"type":"text","delta":"╪╣╪د┘à ┘à╪│"}
+
+data: {"type":"text","delta":"╪ش┘ّ"}
+
+data: {"type":"text","delta":"┘╪ر ┘┘è"}
+
+data: {"type":"text","delta":" ┘ç╪░╪د ╪د┘╪┤┘ç╪▒"}
+
+data: {"type":"text","delta":"."}
+
+data: {"type":"done"}
+
